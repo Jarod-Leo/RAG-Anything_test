@@ -1,0 +1,722 @@
+INFO: RAGAnything initialized with config:
+INFO:   Working directory: ./rag_storage
+INFO:   Parser: mineru
+INFO:   Parse method: auto
+INFO:   Multimodal processing - Image: True, Table: True, Equation: True
+INFO:   Max concurrent files: 1
+INFO: Parser 'mineru' installation verified
+INFO: Initializing LightRAG with parameters: {'working_dir': './rag_storage'}
+INFO: [_] Created new empty graph file: ./rag_storage/graph_chunk_entity_relation.graphml
+INFO: [_] Process 163610 KV load full_docs with 1 records
+INFO: [_] Process 163610 KV load text_chunks with 0 records
+INFO: [_] Process 163610 KV load full_entities with 0 records
+INFO: [_] Process 163610 KV load full_relations with 0 records
+INFO: [_] Process 163610 KV load entity_chunks with 0 records
+INFO: [_] Process 163610 KV load relation_chunks with 0 records
+INFO: [_] Process 163610 KV load llm_response_cache with 0 records
+INFO: [_] Process 163610 doc status load doc_status with 1 records
+INFO: [_] Process 163610 KV load parse_cache with 1 records
+INFO: Multimodal processors initialized with context support
+INFO: Available processors: ['image', 'table', 'equation', 'generic']
+INFO: Context configuration: ContextConfig(context_window=1, context_mode='page', max_context_tokens=2000, include_headers=True, include_captions=True, filter_content_types=['text'])
+INFO: LightRAG, parse cache, and multimodal processors initialized
+INFO: Starting complete document processing: ./document/mercedes-e_user_manual.pdf
+INFO: Starting document parsing: ./document/mercedes-e_user_manual.pdf
+INFO: Using cached parsing result for: document/mercedes-e_user_manual.pdf
+INFO: * Total blocks in cached content_list: 8516
+INFO: Content separation complete:
+INFO:   - Text content length: 293172 characters
+INFO:   - Multimodal items count: 527
+INFO:   - Multimodal type distribution: {'image': 367, 'table': 160}
+INFO: Setting content source for context-aware multimodal processing...
+INFO: Content source set with format: minerU
+INFO: Content source set with format: minerU
+INFO: Content source set with format: minerU
+INFO: Content source set with format: minerU
+INFO: Content source set for context extraction (format: minerU)
+INFO: Starting text content insertion into LightRAG...
+WARNING: Ignoring document ID (already exists): doc-00f2c4144eb5b464fee06de34d9c4039 (mercedes-e_user_manual.pdf)
+WARNING: No new unique documents were found.
+INFO: Reset 1 documents from PROCESSING/FAILED to PENDING status
+INFO: Processing 1 document(s)
+INFO: Extracting stage 1/1: mercedes-e_user_manual.pdf
+INFO: Processing d-id: doc-00f2c4144eb5b464fee06de34d9c4039
+INFO: Embedding func: 8 new workers initialized (Timeouts: Func: 30s, Worker: 60s, Health Check: 75s)
+INFO: LLM func: 4 new workers initialized (Timeouts: Func: 180s, Worker: 360s, Health Check: 375s)
+INFO:  == LLM cache == saving: default:extract:9e42fbc75301f6d1f64997af0eaf1823
+INFO:  == LLM cache == saving: default:extract:7db70cb36b08e67eb6d2f3686253afc9
+INFO: Chunk 1 of 184 extracted 19 Ent + 16 Rel chunk-c189a4818bf111283812e076c87251c7
+INFO:  == LLM cache == saving: default:extract:c003d86522bc452658e8114e59e7e660
+INFO:  == LLM cache == saving: default:extract:7f12774747b61836bfa9574d21f473d6
+INFO:  == LLM cache == saving: default:extract:a05fc7cc967209469df7af02122464bc
+INFO: Chunk 2 of 184 extracted 30 Ent + 19 Rel chunk-814e1464b3d5533152563821653b372e
+INFO:  == LLM cache == saving: default:extract:077d653b732f67e473cb0d5241f474d9
+INFO:  == LLM cache == saving: default:extract:51c5df34ef6ad6c9dc4b0abf2ca0a469
+INFO:  == LLM cache == saving: default:extract:21514507545578d9889dab2c95d6e926
+INFO: Chunk 3 of 184 extracted 43 Ent + 51 Rel chunk-cb5d7a7a84218559be08394454a67c3b
+INFO:  == LLM cache == saving: default:extract:00df9033b129d17d7ccce6c7ece384b2
+INFO: Chunk 4 of 184 extracted 22 Ent + 21 Rel chunk-1290e9974389c7095dbf425c58c70954
+INFO:  == LLM cache == saving: default:extract:411153ce507b7ebced77a9b125aa3c21
+INFO: Chunk 5 of 184 extracted 61 Ent + 59 Rel chunk-4d49fb947bd1a6fe9f433ae65c225f1a
+INFO:  == LLM cache == saving: default:extract:3a8eefeb83bdbab5a208239c6bca8052
+INFO:  == LLM cache == saving: default:extract:3ff310f6082f2c15340d3f4dbc3f5ce5
+INFO:  == LLM cache == saving: default:extract:1594058c0d2e95b00244a540804cdb3a
+INFO:  == LLM cache == saving: default:extract:cfebdec7ac255d1759c624cec1c3561e
+INFO: Chunk 6 of 184 extracted 13 Ent + 10 Rel chunk-f32fc524b6e2f4bd1ab32f7bac2e9df7
+INFO:  == LLM cache == saving: default:extract:afbb3d1f322eb5cd075610ecc667a75f
+INFO: Chunk 7 of 184 extracted 58 Ent + 42 Rel chunk-d8869e2a40af7835bb25480588d535f5
+INFO:  == LLM cache == saving: default:extract:b9937260917563e7ba5829f033f49d9d
+INFO: Chunk 8 of 184 extracted 14 Ent + 13 Rel chunk-d119d9ad6b694e3e485179150ddbd9f5
+INFO:  == LLM cache == saving: default:extract:39ece280a35dc6ed2fee076de716aaee
+INFO:  == LLM cache == saving: default:extract:eb7f597b97d4df1c5a18eb5b0339096f
+INFO: Chunk 9 of 184 extracted 23 Ent + 20 Rel chunk-0daf7aca6625e4b626475f27b2e2f425
+INFO:  == LLM cache == saving: default:extract:dab80591a5e5101883efed4ee7ff7fc1
+INFO:  == LLM cache == saving: default:extract:a41a5ebf84ffda66c7e435751e78cbe2
+INFO:  == LLM cache == saving: default:extract:657c91bd64d48073bf48b74845abb5ae
+INFO: Chunk 10 of 184 extracted 22 Ent + 22 Rel chunk-f1ea88aa36e729943d92169a5fadf1c5
+INFO:  == LLM cache == saving: default:extract:5d92687a8eac00268ebf239b89c890ea
+INFO: Chunk 11 of 184 extracted 32 Ent + 28 Rel chunk-08438099219bf65a478906559921996d
+INFO:  == LLM cache == saving: default:extract:6820a588ce76f78df26e9f759aac4410
+INFO:  == LLM cache == saving: default:extract:1a559a1e1586f68dbed8dc436a7691b1
+INFO: Chunk 12 of 184 extracted 31 Ent + 31 Rel chunk-a6d9924c6604856f83f020120a13c302
+INFO:  == LLM cache == saving: default:extract:b324c4c94b4a806dfb0ba6845bb23685
+INFO:  == LLM cache == saving: default:extract:08a5681781bb59ecf383f48cf05fbf74
+INFO:  == LLM cache == saving: default:extract:bbe3aaa84262f056065e5fc1c9f2c5e3
+INFO:  == LLM cache == saving: default:extract:bfa67c755c2ed9008eb8c020067dc3a9
+INFO: Chunk 13 of 184 extracted 23 Ent + 19 Rel chunk-eb9b922bb6e284559d9286fe639b18bc
+INFO:  == LLM cache == saving: default:extract:0bf6eb5983dd22b80d324b8d185043cd
+INFO: Chunk 14 of 184 extracted 41 Ent + 16 Rel chunk-da5663fc6404459864afa07b9b9e8adb
+INFO:  == LLM cache == saving: default:extract:ecc830e514c013dc8d9a22fb5033a6ab
+INFO:  == LLM cache == saving: default:extract:4f62bd8a566d4743a3d7bbe9bcb30959
+INFO: Chunk 15 of 184 extracted 20 Ent + 23 Rel chunk-2232d83131759cb33357241bf0bd65fa
+INFO:  == LLM cache == saving: default:extract:955b46806e5fa6a05530ddd4f8ec5281
+INFO: Chunk 16 of 184 extracted 14 Ent + 14 Rel chunk-f2bb46c79dc04d237ffb1e6935482b93
+INFO:  == LLM cache == saving: default:extract:39bf018af3b2a8056c4f2b8a4570ca9a
+INFO:  == LLM cache == saving: default:extract:73e33e63a18d23c55d9111fe58017d38
+INFO: Chunk 17 of 184 extracted 13 Ent + 13 Rel chunk-8a849c43c826f58562727a4bfc1ed6ac
+INFO:  == LLM cache == saving: default:extract:94b1dcd3d584c290d7984e0c3ea75bb2
+INFO:  == LLM cache == saving: default:extract:ac178d7aa2139027d0626c71ca0ec013
+INFO:  == LLM cache == saving: default:extract:b6e130207bb7670221e8bcbd4d3ca604
+INFO:  == LLM cache == saving: default:extract:2927e52a1111de8c8740292916be257f
+INFO: Chunk 18 of 184 extracted 16 Ent + 12 Rel chunk-c529c4bed9bf12081de3394b62bea34f
+INFO:  == LLM cache == saving: default:extract:a3f07284c1d8b4273b98892a4dce164c
+INFO: Chunk 19 of 184 extracted 20 Ent + 18 Rel chunk-2407ae8f7621857ba8f9b92a6bc05443
+INFO:  == LLM cache == saving: default:extract:c774d6f0e0d2b70b567626837af66a9b
+INFO:  == LLM cache == saving: default:extract:77d4d5c0ed45748e86212158b9ec408b
+INFO: Chunk 20 of 184 extracted 29 Ent + 27 Rel chunk-f945eb9b994a80bb3d6417784f1f9581
+INFO:  == LLM cache == saving: default:extract:52466076f280981d5bef4a7d283f8f6d
+INFO:  == LLM cache == saving: default:extract:1c878c772a2d28058d2384645b14f822
+INFO: Chunk 21 of 184 extracted 18 Ent + 20 Rel chunk-e528fb03a69f4d012a5ae02c183592e6
+INFO:  == LLM cache == saving: default:extract:9c5995ae85be3056ab883fce4d90e647
+INFO: Chunk 22 of 184 extracted 17 Ent + 16 Rel chunk-ead9e9f8a3df1b09c0a076dcd71ac0cf
+INFO:  == LLM cache == saving: default:extract:001d8ed522f3f4f1521de19ae8bcb8b3
+INFO:  == LLM cache == saving: default:extract:b785920c13839b57dd9a8ab4c074c16c
+INFO: Chunk 23 of 184 extracted 10 Ent + 10 Rel chunk-b80aeef107c3193cb7a2b0334602f7f1
+INFO:  == LLM cache == saving: default:extract:73a3439899f26851b056abce3eb4ffd5
+INFO:  == LLM cache == saving: default:extract:9cbf84343c7947102bcd3c8360b74aca
+INFO:  == LLM cache == saving: default:extract:4784b169cee7169416310afc326d9d06
+INFO:  == LLM cache == saving: default:extract:6ff1a19e72149a847b47901ddce13fd3
+INFO: Chunk 24 of 184 extracted 13 Ent + 11 Rel chunk-fbdd26f3d8f008004fbf15373dc294a4
+INFO:  == LLM cache == saving: default:extract:6df0fd28e392b1879601a025795f71ea
+INFO:  == LLM cache == saving: default:extract:a69e251b732b4604f3e7e60f144f9591
+INFO: Chunk 25 of 184 extracted 19 Ent + 20 Rel chunk-c213cf3a96df96f5f2be987542000260
+INFO:  == LLM cache == saving: default:extract:4884742664e08e224d788d98f9f6014f
+INFO: Chunk 26 of 184 extracted 22 Ent + 18 Rel chunk-be3e0a2258399b8e98e4e9bc395bf4f7
+INFO:  == LLM cache == saving: default:extract:ac40c07be4ce45a3da205c3db9b3c632
+INFO: Chunk 27 of 184 extracted 17 Ent + 15 Rel chunk-6924448184aa25b0bc92e61bb701f6ad
+INFO:  == LLM cache == saving: default:extract:04de1ecead9c9ecfece1194274ac64b0
+INFO:  == LLM cache == saving: default:extract:aeb0bc1a81174bb76add22ebe6206787
+INFO:  == LLM cache == saving: default:extract:3350d9b7dae5dfcd646bb33ddf8e6146
+INFO: Chunk 28 of 184 extracted 20 Ent + 17 Rel chunk-51e82f6b23b7109242ab3016e0b16aee
+INFO:  == LLM cache == saving: default:extract:16a2443da55200010ea7962eac251fb4
+INFO:  == LLM cache == saving: default:extract:abab9cc7185787f4bdb2259a12d894a6
+INFO: Chunk 29 of 184 extracted 19 Ent + 17 Rel chunk-c7eb82f0ef1a80cd5b2e11b5f2d7d7b3
+INFO:  == LLM cache == saving: default:extract:f2a8312802c68f77d2292b3ad930b18e
+INFO: Chunk 30 of 184 extracted 23 Ent + 20 Rel chunk-d0422f581d5b0a552b2145ab640665fe
+INFO:  == LLM cache == saving: default:extract:433757cb2a0f606c21fde1274c144177
+INFO:  == LLM cache == saving: default:extract:5c5f2717592de2b3fed7ccd083f5c172
+INFO: Chunk 31 of 184 extracted 27 Ent + 27 Rel chunk-1076a798648c015b61dd8635fb802547
+INFO:  == LLM cache == saving: default:extract:5fa746629dfb5799cd3ae2cade76cace
+INFO:  == LLM cache == saving: default:extract:09dbd0aa645cad21931df45763e747ae
+INFO:  == LLM cache == saving: default:extract:1cd9e1c31dfe6870c8b88463179ee1fc
+INFO: Chunk 32 of 184 extracted 16 Ent + 15 Rel chunk-574e5baebac8fb4fbe5655d18961fad6
+INFO:  == LLM cache == saving: default:extract:b8a2f3214ed9beb97d5f2af7c0df7179
+INFO:  == LLM cache == saving: default:extract:29105801e4c47569f61db07772b8d26f
+INFO:  == LLM cache == saving: default:extract:6e3f358f4af659dbf556bb3b724f3160
+INFO: Chunk 33 of 184 extracted 17 Ent + 13 Rel chunk-ac83ce72a904f585ccca711477aa1fe8
+INFO:  == LLM cache == saving: default:extract:a76a7f1ced2f950f5b2ad85331703784
+INFO: Chunk 34 of 184 extracted 13 Ent + 15 Rel chunk-60b4d7dacc9ac88acc34c5e8675b5ac9
+INFO:  == LLM cache == saving: default:extract:fadcf8c00ae28736f49c16889e5d193e
+INFO: Chunk 35 of 184 extracted 14 Ent + 13 Rel chunk-4e25e3aff04f8056123f2ebf6778739e
+INFO:  == LLM cache == saving: default:extract:fd3e003c691cd7280ebf7636de97f989
+INFO:  == LLM cache == saving: default:extract:00c21dec7758113044497f9e4b07403b
+INFO: Chunk 36 of 184 extracted 13 Ent + 14 Rel chunk-88e5a76fe0c993b94df889deb0d6eb20
+INFO:  == LLM cache == saving: default:extract:d9c306d3f91e4807e5d2c3717b768e38
+INFO:  == LLM cache == saving: default:extract:818e98f25918b63828ac9d5d60cd1b5d
+INFO:  == LLM cache == saving: default:extract:a16dcd389f148b73ab1b7af90babb8c1
+INFO:  == LLM cache == saving: default:extract:2740c8541fe7a6a3f559399e9d40f930
+INFO: Chunk 37 of 184 extracted 13 Ent + 11 Rel chunk-94e1cf4928e7a2a7464dfe0eeceb692a
+INFO:  == LLM cache == saving: default:extract:e2c9925d148d53f0c21864c2265dacac
+INFO: Chunk 38 of 184 extracted 14 Ent + 14 Rel chunk-bf5e54badf9719f6fc4a5ecc25c7a481
+INFO:  == LLM cache == saving: default:extract:e6752cfc6df76119549c6b24e59a11c8
+INFO: Chunk 39 of 184 extracted 22 Ent + 19 Rel chunk-d4b232890e2bda514c363310b46b1206
+INFO:  == LLM cache == saving: default:extract:f971b623a23297d2a85a1c959532af87
+INFO:  == LLM cache == saving: default:extract:37e81b1b1e51c5e3042eddda20b850f0
+INFO:  == LLM cache == saving: default:extract:29b466cfe5caca750d1216961fcd4099
+INFO: Chunk 40 of 184 extracted 25 Ent + 24 Rel chunk-09f4d4e19bb26f9bc31248a1eb7d10fb
+INFO:  == LLM cache == saving: default:extract:ca1b39cae8519d38a637c7d20b2d23ea
+INFO:  == LLM cache == saving: default:extract:5a96b75ab24345729d93903ad2fc5a57
+INFO:  == LLM cache == saving: default:extract:cdb15de0b18029fccfb909335fa2d905
+INFO: Chunk 41 of 184 extracted 18 Ent + 21 Rel chunk-eca6ccf3ddd309a61134275220962527
+INFO:  == LLM cache == saving: default:extract:a70a0883293785b53716093a1fc55351
+INFO: Chunk 42 of 184 extracted 20 Ent + 17 Rel chunk-5a95567cb053c38d8addad32f91cb01e
+INFO:  == LLM cache == saving: default:extract:7554531ca6dcc9ccf161a085748f0bca
+INFO: Chunk 43 of 184 extracted 17 Ent + 23 Rel chunk-fc3837b998694f10d7afa5804f0ee018
+INFO:  == LLM cache == saving: default:extract:51b3cdecebea69983d8db0e212517714
+INFO:  == LLM cache == saving: default:extract:4f4e450da813f823f17e0486412c7803
+INFO:  == LLM cache == saving: default:extract:e71665c387d26daf726708869bdee4eb
+INFO: Chunk 44 of 184 extracted 17 Ent + 16 Rel chunk-1c4790bba37b94eed9b183e4b6984050
+INFO:  == LLM cache == saving: default:extract:a7d5508ecdcd5619a4e23f4d602500e8
+INFO:  == LLM cache == saving: default:extract:c8f0c2e8576ea1ac18e2cddb2524b60e
+INFO: Chunk 45 of 184 extracted 33 Ent + 22 Rel chunk-b07318a05ea925cb337fa48a1fa1a3c3
+INFO:  == LLM cache == saving: default:extract:2cd153a8832758bdc973b3335afae75c
+INFO:  == LLM cache == saving: default:extract:b8169b8f7dd560b894b27d2c1c8eaff6
+INFO: Chunk 46 of 184 extracted 26 Ent + 23 Rel chunk-0688b089c263f002a676ad4e32ac7942
+INFO:  == LLM cache == saving: default:extract:4ba2a5d43f9c618c22dfa138d3e9508d
+INFO: Chunk 47 of 184 extracted 21 Ent + 18 Rel chunk-51ee8dfa9d5e901c79dff3f3896f9755
+INFO:  == LLM cache == saving: default:extract:52dccdb59163405eb1f548c5c7fb7536
+INFO:  == LLM cache == saving: default:extract:185f96f156db404e4dce34b2b0ad91b4
+INFO:  == LLM cache == saving: default:extract:300c0def1e0700debe5acdb831cb5a40
+INFO:  == LLM cache == saving: default:extract:573b68773432f81add3883affa97b46d
+INFO: Chunk 48 of 184 extracted 16 Ent + 14 Rel chunk-9b92861ad11a1a17418ff58642ba6039
+INFO:  == LLM cache == saving: default:extract:e394a98df8751451f827306c3c1ba0b6
+INFO:  == LLM cache == saving: default:extract:a55c07014691c0e4e7db89bc14d154a5
+INFO: Chunk 49 of 184 extracted 19 Ent + 17 Rel chunk-6956916bbbb6e8034ec858bf933391da
+INFO:  == LLM cache == saving: default:extract:74b486b95884e44268b96f252533ba09
+INFO: Chunk 50 of 184 extracted 22 Ent + 20 Rel chunk-a8952dee1abd62d31438a2052bc24904
+INFO:  == LLM cache == saving: default:extract:e88be0fc8a01c5518bb5e5edefdeaccf
+INFO: Chunk 51 of 184 extracted 20 Ent + 19 Rel chunk-f1d5f4308c27c842521f066406f5e2c1
+INFO:  == LLM cache == saving: default:extract:cd3d9f872cadc4b912a0d57f15546f6b
+INFO:  == LLM cache == saving: default:extract:443b2c1c63fbc423ac3fbc937cd6f3b9
+INFO:  == LLM cache == saving: default:extract:ab43771ed03e103e9f2db7b1ea672359
+INFO:  == LLM cache == saving: default:extract:d01897876e37efbfc2e8b6245f44c076
+INFO: Chunk 52 of 184 extracted 18 Ent + 16 Rel chunk-ca2a26546f881b1696b66b75d7ebc009
+INFO:  == LLM cache == saving: default:extract:8e70aa8a07aebd4749cd57baeef2486d
+INFO: Chunk 53 of 184 extracted 28 Ent + 20 Rel chunk-29b5fad79f09b15033560836c587515c
+INFO:  == LLM cache == saving: default:extract:caf58a06eaf0b55aced74e87e9a2f95d
+INFO: Chunk 54 of 184 extracted 20 Ent + 18 Rel chunk-69e16bee45c55ffed46d9b51ac393994
+INFO:  == LLM cache == saving: default:extract:ac4bac6ce45bbeb6cd384dd0ef6d3b38
+INFO:  == LLM cache == saving: default:extract:7a6e4388fb1298fb6a8b7d4543c62aad
+INFO:  == LLM cache == saving: default:extract:57e46f3b74774b790be5893b1875713b
+INFO: Chunk 55 of 184 extracted 20 Ent + 18 Rel chunk-2970d3d229dc99ae889afc7b2eb129e2
+INFO:  == LLM cache == saving: default:extract:fa66fa63558d54f5c53d036e7f6deb5e
+INFO: Chunk 56 of 184 extracted 30 Ent + 27 Rel chunk-196699623a38af01a59003e0811f3625
+INFO:  == LLM cache == saving: default:extract:5dc61c8616aa09b0e77873bab873dfe9
+INFO:  == LLM cache == saving: default:extract:4e486ff03bb22fa5ee4c256b90d6b308
+INFO: Chunk 57 of 184 extracted 27 Ent + 26 Rel chunk-a4283233e7c54d13113c0c626f160e06
+INFO:  == LLM cache == saving: default:extract:a53241ddcd0f5143171dbf1fdb49a19f
+INFO:  == LLM cache == saving: default:extract:26011a2c4183c3728bcd28b56442dba6
+INFO:  == LLM cache == saving: default:extract:db2452be1317396874d3bc87b5e58e80
+INFO:  == LLM cache == saving: default:extract:a4e886d139c08307bd42246bb0f39b70
+INFO: Chunk 58 of 184 extracted 19 Ent + 18 Rel chunk-de31d3b3073e54c1e3ea96abb0ec653e
+INFO:  == LLM cache == saving: default:extract:7f718fa8503e6a7dea978a01fe44fd6b
+INFO: Chunk 59 of 184 extracted 18 Ent + 16 Rel chunk-f9427083e62e07b50ddcc5e4a3aa9239
+INFO:  == LLM cache == saving: default:extract:27b57fc36c80600d80f010b9a797b021
+INFO: Chunk 60 of 184 extracted 21 Ent + 18 Rel chunk-0a35f977ae95369ac78f802626d13622
+INFO:  == LLM cache == saving: default:extract:a197611485d3649c3cdc10a3f23b2cbb
+INFO:  == LLM cache == saving: default:extract:bc200cb4a6c0c4bbf16bb90552d16de7
+INFO: Chunk 61 of 184 extracted 20 Ent + 19 Rel chunk-3709219a9e96696852fbf97b690f8fd9
+INFO:  == LLM cache == saving: default:extract:d463fbd4d08d8d0d816508a8bbb95706
+INFO:  == LLM cache == saving: default:extract:6e40e56866ce40536a06a1fcc67cfea2
+INFO:  == LLM cache == saving: default:extract:3b52ada241ba1505cbcedd7b8b54fd80
+INFO: Chunk 62 of 184 extracted 21 Ent + 19 Rel chunk-c0f9fa7eaf4a79dd2c5757440cbab71c
+INFO:  == LLM cache == saving: default:extract:d2c13a29fac693dda15a5716560bf37d
+INFO:  == LLM cache == saving: default:extract:27199c3c9e663a4cd0b4fd83fc6b7a3b
+INFO:  == LLM cache == saving: default:extract:e5cf68be78b62bd2200be388ce7708cf
+INFO: Chunk 63 of 184 extracted 31 Ent + 27 Rel chunk-febe2584faba1c18fb626490eb9ad99f
+INFO:  == LLM cache == saving: default:extract:4d46149bd6dcc061afbb6695ebce6cc9
+INFO: Chunk 64 of 184 extracted 13 Ent + 12 Rel chunk-a447ac63e7d65300dbe72d653a459fae
+INFO:  == LLM cache == saving: default:extract:08fef56490cf57375b640926968b37b5
+INFO: Chunk 65 of 184 extracted 25 Ent + 23 Rel chunk-3c5cffc539df489782085688e1f3ef15
+INFO:  == LLM cache == saving: default:extract:eeb3a54cb247257255b0db4894819d73
+INFO:  == LLM cache == saving: default:extract:d3d3ab6bc9a1873aa64d187217ea3176
+INFO:  == LLM cache == saving: default:extract:a94fc7277648ff73c46fa472bf4f850f
+INFO:  == LLM cache == saving: default:extract:95ac7531a72622ee4575e4dd29bbf6b1
+INFO: Chunk 66 of 184 extracted 28 Ent + 21 Rel chunk-68b28c03ff9bbcedd9091a2e185f58c0
+INFO:  == LLM cache == saving: default:extract:5ebc99854517f979d7d67827ddd37cd7
+INFO: Chunk 67 of 184 extracted 22 Ent + 25 Rel chunk-92b63c72a30760a2b025d41c5034e074
+INFO:  == LLM cache == saving: default:extract:3e8856a023ffc6fa83cee712eb0ccea7
+INFO: Chunk 68 of 184 extracted 20 Ent + 26 Rel chunk-f2eb56c7a44c534bc87e7e66cbfb4c75
+INFO:  == LLM cache == saving: default:extract:b1d9f37f7b8abacf6856b0b8c50220a5
+INFO:  == LLM cache == saving: default:extract:acb7e05c91bb8dbd76ef6f4d3ff954cb
+INFO:  == LLM cache == saving: default:extract:4f067f922274395d64f8317ea910dd2f
+INFO: Chunk 69 of 184 extracted 22 Ent + 17 Rel chunk-3ce1162d9d80e114dee0ccf6b9fe9175
+INFO:  == LLM cache == saving: default:extract:44c498fb2dbf003fd5d936db4b250935
+INFO: Chunk 70 of 184 extracted 42 Ent + 45 Rel chunk-ff6b229f9409ba335991844c75af38fb
+INFO:  == LLM cache == saving: default:extract:40f4c0cfdb201ead0a5b6eb421af982b
+INFO:  == LLM cache == saving: default:extract:68c8e41134b5233e0f26da230d9f6c2d
+INFO: Chunk 71 of 184 extracted 21 Ent + 20 Rel chunk-d768ed85172b663787d17cb4e12644f5
+INFO:  == LLM cache == saving: default:extract:7aaa8c969dd61990d338591aef24a922
+INFO:  == LLM cache == saving: default:extract:fde40a850c93073bc9ae5fe832ee5dd6
+INFO: Chunk 72 of 184 extracted 28 Ent + 28 Rel chunk-26b39c5fa4964b8f153e249bfe2b84f1
+INFO:  == LLM cache == saving: default:extract:be862c68f9b59c49fd16f3f7887fc9c8
+INFO:  == LLM cache == saving: default:extract:79e114a60d1f202f85b61eb4e18dc885
+INFO: Chunk 73 of 184 extracted 20 Ent + 18 Rel chunk-a5068ba3c56b07e540887779e393eab6
+INFO:  == LLM cache == saving: default:extract:3702f7d25f5193345509b528dd304ea7
+INFO:  == LLM cache == saving: default:extract:c9c203b8bdc89cf0ab7075820be3168f
+INFO:  == LLM cache == saving: default:extract:4ddb89fb09e3c26ab82afb31ab394ece
+INFO: Chunk 74 of 184 extracted 22 Ent + 20 Rel chunk-ae5ce3d1276165f2fdab05416edc020a
+INFO:  == LLM cache == saving: default:extract:7e16d3f3d96512404f83835a4353f9f6
+INFO: Chunk 75 of 184 extracted 20 Ent + 15 Rel chunk-a6d53bdfd8a66ca9c154721e50288117
+INFO:  == LLM cache == saving: default:extract:0b54e26f8798b3c688df5c41c38f433f
+INFO:  == LLM cache == saving: default:extract:8fbec271d65df0ab050e4f52ce402d9c
+INFO:  == LLM cache == saving: default:extract:a5b3ecbcfd4ae78960572c7e336598c1
+INFO: Chunk 76 of 184 extracted 27 Ent + 26 Rel chunk-dd54c5b38cf3a31d9688b86939c515cb
+INFO:  == LLM cache == saving: default:extract:07a914501624ac6bf6d1b707d3a4eec5
+INFO: Chunk 77 of 184 extracted 24 Ent + 21 Rel chunk-404ce324eedb494a25c5edd1c7acc4ef
+INFO:  == LLM cache == saving: default:extract:fe5bd7ae3f89baa0ba108373484cadd9
+INFO:  == LLM cache == saving: default:extract:f37f3748065a0b4cf1701994afd2119d
+INFO:  == LLM cache == saving: default:extract:2c3a6e4f6bfe2b927a9a1e396cf8600d
+INFO: Chunk 78 of 184 extracted 26 Ent + 26 Rel chunk-e49ed0731c986d0534612327154577f7
+INFO:  == LLM cache == saving: default:extract:d936886ecd350647b07180e4403ad958
+INFO:  == LLM cache == saving: default:extract:28d3239f4c56ae0145489673fcdf32b1
+INFO: Chunk 79 of 184 extracted 12 Ent + 12 Rel chunk-aa7d3f201c612842d0fc9c949b6aecaf
+INFO:  == LLM cache == saving: default:extract:01106e8ea3f0dd598b8d20471571d8ef
+INFO:  == LLM cache == saving: default:extract:513203539b713f2264b713861cf895c6
+INFO: Chunk 80 of 184 extracted 28 Ent + 24 Rel chunk-5419de46db502dc5d3440510f2bd5e2c
+INFO:  == LLM cache == saving: default:extract:979f432f8418f910c5539671d690f62c
+INFO: Chunk 81 of 184 extracted 23 Ent + 23 Rel chunk-31eb0936bc789f139caee36879ae06c0
+INFO:  == LLM cache == saving: default:extract:e8ae256b6538d25aa830f11e2119eaa8
+INFO:  == LLM cache == saving: default:extract:f0434ca456ecc74740f60c268bc35b3e
+INFO:  == LLM cache == saving: default:extract:298d2955161bed9ea1306166f4a664ca
+INFO: Chunk 82 of 184 extracted 14 Ent + 17 Rel chunk-161973433ad4df84e33d5f95eb751d31
+INFO:  == LLM cache == saving: default:extract:e0ebfc3b92137709e863ce2d82c11c17
+INFO:  == LLM cache == saving: default:extract:b2b35b0c13af0df63e3af9adf2ec035d
+INFO: Chunk 83 of 184 extracted 27 Ent + 29 Rel chunk-8c4995ff84a5a7b0284fd7b95dccf186
+INFO:  == LLM cache == saving: default:extract:74c4f8735278d4185b76e66037f19be2
+INFO:  == LLM cache == saving: default:extract:763421dee30acf2dab347dc3e067fd9e
+INFO: Chunk 84 of 184 extracted 21 Ent + 18 Rel chunk-2a0497e1c13c6b7eacf1b9aad5c2ca14
+INFO:  == LLM cache == saving: default:extract:dc701eb7bc51e79f0e3c0aaacd9344f4
+INFO:  == LLM cache == saving: default:extract:12fd4b66860baaa52e73edbc51480c5f
+INFO:  == LLM cache == saving: default:extract:2d46b59afb947273c1cc123130b64635
+INFO: Chunk 85 of 184 extracted 26 Ent + 27 Rel chunk-2fc9b1dbd40788c9ff5e6d2f0fd94883
+INFO:  == LLM cache == saving: default:extract:72c92ca01d807e8103d7c76e85034dfe
+INFO: Chunk 86 of 184 extracted 16 Ent + 17 Rel chunk-164be096df9dfe5c1941430a66c12025
+INFO:  == LLM cache == saving: default:extract:ee87febac59ff885d6f613f149ce4315
+INFO:  == LLM cache == saving: default:extract:88cb7ad63a209255bfe2fbcfef76eb84
+INFO: Chunk 87 of 184 extracted 27 Ent + 26 Rel chunk-e5ba5b0b52991b9c51b943b122e16c9f
+INFO:  == LLM cache == saving: default:extract:be705f40e34c68f17879cdb9020de221
+INFO:  == LLM cache == saving: default:extract:f265a79cca511ba456abcba4a356237e
+INFO: Chunk 88 of 184 extracted 16 Ent + 15 Rel chunk-58c3230249ffe8109be0592c0e84bc0f
+INFO:  == LLM cache == saving: default:extract:f9cecce8c8fc2d222a171b97aed4bbde
+INFO: Chunk 89 of 184 extracted 33 Ent + 29 Rel chunk-b3551fd19bf652b535f5f58c2f1585ad
+INFO:  == LLM cache == saving: default:extract:765502a9b2f15926833d69d6a2accebe
+INFO:  == LLM cache == saving: default:extract:b7d610f10e68652b1baff658279b7ef2
+INFO:  == LLM cache == saving: default:extract:cb780be6f2807a4e93b675f25cbca75d
+INFO: Chunk 90 of 184 extracted 13 Ent + 14 Rel chunk-b2681fc38db83404ff40d65c69a1b640
+INFO:  == LLM cache == saving: default:extract:add4797423a68b0cbc53cf9db5a33386
+INFO: Chunk 91 of 184 extracted 22 Ent + 21 Rel chunk-3a1764ece4c14fa6959174fef8778027
+INFO:  == LLM cache == saving: default:extract:a4a2d6b7a7667d423fda1a1ded4961f6
+INFO:  == LLM cache == saving: default:extract:cfb28d102ef88c7b07c57672c93da0f8
+INFO:  == LLM cache == saving: default:extract:f3fb184c42f3d165bf2223c2575423b7
+INFO: Chunk 92 of 184 extracted 26 Ent + 26 Rel chunk-0826c007bbfa022bc98a9841aa58a408
+INFO:  == LLM cache == saving: default:extract:c78a76547a66ad5a42b730f411c2532a
+INFO:  == LLM cache == saving: default:extract:2dc43b2941568b0829413db6dbd22bab
+INFO: Chunk 93 of 184 extracted 25 Ent + 25 Rel chunk-96d9b73db5be97e0a37cc7e2517e8773
+INFO:  == LLM cache == saving: default:extract:219200673d295d88d9ebb7c320740378
+INFO:  == LLM cache == saving: default:extract:da1ab143d57619a0f9b16f03abbf45b3
+INFO:  == LLM cache == saving: default:extract:9792f3bbbd69964a0cdaf2fce66a415c
+INFO:  == LLM cache == saving: default:extract:dc24739002e6bd80446374e3bd183885
+INFO: Chunk 94 of 184 extracted 16 Ent + 15 Rel chunk-bcaea73ba06dfe2213d0da594ecc68bd
+INFO:  == LLM cache == saving: default:extract:95e9e7cf02e6f55b11a5b438a74e7c91
+INFO: Chunk 95 of 184 extracted 23 Ent + 21 Rel chunk-fdd4d00e0d559d2404186c88ab83d1e7
+INFO:  == LLM cache == saving: default:extract:de0cd8d2a2da5781b8154fb0bd0814dc
+INFO: Chunk 96 of 184 extracted 21 Ent + 20 Rel chunk-5d27ddf5679de45c02a752a9a3cb0350
+INFO:  == LLM cache == saving: default:extract:1f735cdc17aecdc2487c8f90f212fb42
+INFO: Chunk 97 of 184 extracted 29 Ent + 29 Rel chunk-f366673377ca2a8078055a73f6ff58b6
+INFO:  == LLM cache == saving: default:extract:1d6ea88936558811097f27a5a05cd849
+INFO:  == LLM cache == saving: default:extract:99995b7561b384caee32cdb2fde6736a
+INFO:  == LLM cache == saving: default:extract:e865b59a778d86e90e1adee881cf191d
+INFO:  == LLM cache == saving: default:extract:4715077aa57b8c10daafba4f36ed4dbb
+INFO:  == LLM cache == saving: default:extract:a7f7c39be5c04c638e97d649e522fe4c
+INFO: Chunk 98 of 184 extracted 18 Ent + 17 Rel chunk-bf088fe5b572bed019ccbd2b21bfe5f4
+INFO:  == LLM cache == saving: default:extract:a9d49580097de53e843c75b1c302e408
+INFO: Chunk 99 of 184 extracted 20 Ent + 18 Rel chunk-5ded55d899b4564591b7a51e6a5f647a
+INFO:  == LLM cache == saving: default:extract:d881732c8420c0374c71c9cad6a2aa5f
+INFO: Chunk 100 of 184 extracted 17 Ent + 16 Rel chunk-bf515ab673ee8005b73574c81d9418b4
+INFO:  == LLM cache == saving: default:extract:b315d7065d8b9e5f8876c9a10d37edb4
+INFO: Chunk 101 of 184 extracted 15 Ent + 14 Rel chunk-2afb0174faa6f92476e8634359ea7c59
+INFO:  == LLM cache == saving: default:extract:e1df65c8e02ee6451e3424015f03bf96
+INFO:  == LLM cache == saving: default:extract:8e050a52c4900382af0a51843e26ead1
+INFO:  == LLM cache == saving: default:extract:49c7839ea526d1de9ce5e83c816a256f
+INFO: Chunk 102 of 184 extracted 14 Ent + 12 Rel chunk-f048d092fe9c9255ffc37db5edc96ceb
+INFO:  == LLM cache == saving: default:extract:82d6e11b5cfc0db4bae366f29b95d0fc
+INFO:  == LLM cache == saving: default:extract:fb19e8e9482f1cd6deee1c990dd6d8e6
+INFO:  == LLM cache == saving: default:extract:5d59905923f818ebe87d1347fec73096
+INFO: Chunk 103 of 184 extracted 19 Ent + 21 Rel chunk-cabd9edd8db918dd721d98151a89f969
+INFO:  == LLM cache == saving: default:extract:61e6acf10dcf6ac487b12fb3874ddb98
+INFO: Chunk 104 of 184 extracted 25 Ent + 24 Rel chunk-cc05ec8fffb99c1ad3fa0718bdcc39bb
+INFO:  == LLM cache == saving: default:extract:054a04c4a81bb83bdf1e6a92b501faec
+INFO: Chunk 105 of 184 extracted 25 Ent + 23 Rel chunk-e9d674382e60b6a5d41b19a7916628f3
+INFO:  == LLM cache == saving: default:extract:7315245dd273843d05fdce321a119928
+INFO:  == LLM cache == saving: default:extract:494b6a943a3dd9132a2ee49a391658df
+INFO: Chunk 106 of 184 extracted 16 Ent + 15 Rel chunk-015910434e4742089cea3b68e4dd6757
+INFO:  == LLM cache == saving: default:extract:abdc7204eda0cffaae2a6c3aaa4f7c2c
+INFO:  == LLM cache == saving: default:extract:f3e42583ef37f482ca72c64992e3e920
+INFO:  == LLM cache == saving: default:extract:61952115bba9082979c2f6923fb5d589
+INFO: Chunk 107 of 184 extracted 22 Ent + 20 Rel chunk-ae08af2a2318086363c8716b5be1f835
+INFO:  == LLM cache == saving: default:extract:663ca4f1de451a63d6d5fa7c6efccd2e
+INFO: Chunk 108 of 184 extracted 25 Ent + 25 Rel chunk-1829324df4fae17e831f297928408803
+INFO:  == LLM cache == saving: default:extract:eed10a5dad3a906c791bdea86051d53f
+INFO:  == LLM cache == saving: default:extract:aa505f01b5933cd6d2504cb9808f697d
+INFO:  == LLM cache == saving: default:extract:31ade34e3d300ada41b85a77205e0e15
+INFO: Chunk 109 of 184 extracted 24 Ent + 22 Rel chunk-efa680bf3fb7649afae00394135b2abe
+INFO:  == LLM cache == saving: default:extract:a9f40223e3ebf3d794045bf19569d89f
+INFO:  == LLM cache == saving: default:extract:a2a7e1b30ff786435dcc85c497b17781
+INFO: Chunk 110 of 184 extracted 12 Ent + 12 Rel chunk-4f4f56b1ce848fea5861db6dd87f2e68
+INFO:  == LLM cache == saving: default:extract:9747e05cbd1b8c6df149e73cb62fef12
+INFO:  == LLM cache == saving: default:extract:15adb54322ffa1747c52c4fe9b9aa4b7
+INFO: Chunk 111 of 184 extracted 22 Ent + 21 Rel chunk-bff4ca9df2a74e2a0e34e8a636d71339
+INFO:  == LLM cache == saving: default:extract:803075d39b9e6e74a9b46bb72a44fd3a
+INFO:  == LLM cache == saving: default:extract:b51e3c02b55bff04b5ecf13cc7a731f2
+INFO: Chunk 112 of 184 extracted 43 Ent + 41 Rel chunk-44baebecc4a6a27c7e3e79133a924abb
+INFO:  == LLM cache == saving: default:extract:590b1e06281777ca44250f56497f27f6
+INFO:  == LLM cache == saving: default:extract:814b1cdabc10896194d6c7dbbe25419d
+INFO: Chunk 113 of 184 extracted 19 Ent + 18 Rel chunk-b04ccf8bcba0d0beeb0b6d5fbedec6cd
+INFO:  == LLM cache == saving: default:extract:bdcd5c814233bbdeff7bdeff516121d5
+INFO: Chunk 114 of 184 extracted 25 Ent + 25 Rel chunk-38289a867be82cbb1931a55a877ea4d5
+INFO:  == LLM cache == saving: default:extract:17907cba48bf96eb53f66e010b35a7cc
+INFO:  == LLM cache == saving: default:extract:f1f18ab20e8ccae98e60946774efd2ad
+INFO: Chunk 115 of 184 extracted 20 Ent + 18 Rel chunk-dea21294700af305b19c5418b32ba78f
+INFO:  == LLM cache == saving: default:extract:72f0ca7682f6e8ff1c37e0235858e557
+INFO:  == LLM cache == saving: default:extract:ff4793c99f5183d4a4362b0b00631f77
+INFO:  == LLM cache == saving: default:extract:858e0f3a6355632db653c355409833eb
+INFO: Chunk 116 of 184 extracted 19 Ent + 18 Rel chunk-4c9906dbb6bd84ccaee31802cf995d39
+INFO:  == LLM cache == saving: default:extract:85d2fe4f817416d112148ebecbce8873
+INFO: Chunk 117 of 184 extracted 25 Ent + 22 Rel chunk-7d9a92e87ca578457f3d0b2fb9398377
+INFO:  == LLM cache == saving: default:extract:cac835b22446343acbd1c882ec271c6e
+INFO:  == LLM cache == saving: default:extract:da971f5b7955c9860db4506eae52d90f
+INFO:  == LLM cache == saving: default:extract:9d6ed9b17a4117334868850108468882
+INFO: Chunk 118 of 184 extracted 20 Ent + 19 Rel chunk-5cce7c00fb034d4659321e756461e19e
+INFO:  == LLM cache == saving: default:extract:2fdd986293ad7e123899a0513d9f3eae
+INFO:  == LLM cache == saving: default:extract:5bdc9c968c6b2dfe79474cc8b8c31993
+INFO: Chunk 119 of 184 extracted 29 Ent + 29 Rel chunk-3ebc1dff5fa778b221fee3b4d47b4c29
+INFO:  == LLM cache == saving: default:extract:60e8e0ec1f58b8f51b6588604021fad4
+INFO: Chunk 120 of 184 extracted 30 Ent + 29 Rel chunk-c791cdd9ec2c1d3e2e0d7b4f94df4e76
+INFO:  == LLM cache == saving: default:extract:dbc939ad8c343430a46cf6e3a068947c
+INFO:  == LLM cache == saving: default:extract:9d2246482fb5e9ab8550b531e1592cd4
+INFO:  == LLM cache == saving: default:extract:6cef5dcebe1f34eda9ff81048563fda3
+INFO: Chunk 121 of 184 extracted 29 Ent + 19 Rel chunk-2d65353166d513f0d466f19dca387e7e
+INFO:  == LLM cache == saving: default:extract:9e6efcd711745f7bc81c0d3d90d87ebd
+INFO: Chunk 122 of 184 extracted 25 Ent + 22 Rel chunk-bb7a63437cc3ff157c5b471cbcf51ce6
+INFO:  == LLM cache == saving: default:extract:a9c52f53c709809c0d836e17f15eeda4
+INFO:  == LLM cache == saving: default:extract:c172856e6bb48daad25b57874b19216d
+INFO:  == LLM cache == saving: default:extract:f76479ea5d2a49d57ab0cb2d4d9d674b
+INFO: Chunk 123 of 184 extracted 24 Ent + 22 Rel chunk-ea14e1e828d4242d8417c629083889f0
+INFO:  == LLM cache == saving: default:extract:e1f0b6ae368068633906f9c299f5490c
+INFO:  == LLM cache == saving: default:extract:6d876fd81321895600509be17eccb801
+INFO: Chunk 124 of 184 extracted 17 Ent + 16 Rel chunk-d03c8dd0345c3d33f217a5dd875c5cad
+INFO:  == LLM cache == saving: default:extract:56a071a54cb7f3e435f391369c050d31
+INFO:  == LLM cache == saving: default:extract:a3f4bdcd5a96e4d7d6100ef4d917f2f9
+INFO: Chunk 125 of 184 extracted 24 Ent + 20 Rel chunk-b736efd7549d7314ea8acd54b4b6ac16
+INFO:  == LLM cache == saving: default:extract:94d65d2bad30e77512589a6fade585cd
+INFO: Chunk 126 of 184 extracted 22 Ent + 17 Rel chunk-ff42b2dbb408d340b6543c06a3d00579
+INFO:  == LLM cache == saving: default:extract:d4d89d02c33f13644cb741cb9f1191d8
+INFO:  == LLM cache == saving: default:extract:3cde4f19e6d651b3fef8313abe85c908
+INFO:  == LLM cache == saving: default:extract:088d1e551c116df30b49529ca2cf50d9
+INFO: Chunk 127 of 184 extracted 14 Ent + 14 Rel chunk-0e415bedcb621e59a022dfa0a0f98d39
+INFO:  == LLM cache == saving: default:extract:dd80efc886aedbfb628efb9396b22f54
+INFO: Chunk 128 of 184 extracted 20 Ent + 18 Rel chunk-1e2fb15e86da71238ad6a193079ad31d
+INFO:  == LLM cache == saving: default:extract:bfa1fb7c602687f6e893160ae9d888ef
+INFO:  == LLM cache == saving: default:extract:86dd620a70fa35f488008b93da3974e1
+INFO:  == LLM cache == saving: default:extract:c4a49591532e124e65aa97993e3d0d61
+INFO:  == LLM cache == saving: default:extract:6d1b1e3827348b73e8a10ff6b28a2143
+INFO:  == LLM cache == saving: default:extract:cfbd6255145424e0194ed5fbfe6d8b88
+INFO: Chunk 129 of 184 extracted 18 Ent + 18 Rel chunk-cb6f13a40b67fbb1b991947dbb2ab599
+INFO:  == LLM cache == saving: default:extract:67b099de86b90d7d062fd18a4a910854
+INFO: Chunk 130 of 184 extracted 16 Ent + 15 Rel chunk-6ee81092cb22f96ac0c70a3c0edffbe5
+INFO:  == LLM cache == saving: default:extract:b6e9150c2549c558dc6cefc6b8719831
+INFO: Chunk 131 of 184 extracted 15 Ent + 13 Rel chunk-3addc54ce3531addaea62f9ebf92934a
+INFO:  == LLM cache == saving: default:extract:784b565b27b3849696fcd4a11c7b449b
+INFO:  == LLM cache == saving: default:extract:665d8e41446bad19152cc9a4c4075bfb
+INFO: Chunk 132 of 184 extracted 30 Ent + 22 Rel chunk-2510f23fa4a2469f62aca2c5010b481a
+INFO:  == LLM cache == saving: default:extract:39a5901c4b06c8e030681d1aa4ea9f22
+INFO:  == LLM cache == saving: default:extract:7ae8eec431dd9a91646a30b686200c6f
+INFO: Chunk 133 of 184 extracted 24 Ent + 24 Rel chunk-3b0f4f78c25eb2cd49f0d20fdd091493
+INFO:  == LLM cache == saving: default:extract:3ca66182797f2cc89553b00ec845f5a5
+INFO:  == LLM cache == saving: default:extract:c051502f3d75774fb81d3494a07d3b87
+INFO: Chunk 134 of 184 extracted 25 Ent + 21 Rel chunk-37483280c196f28dd364cf9c5cde2c9f
+INFO:  == LLM cache == saving: default:extract:c884bb5b171fda6b4b8d4a972c653704
+INFO:  == LLM cache == saving: default:extract:ad62aed138c5f9f4bcf8946ff63c91be
+INFO:  == LLM cache == saving: default:extract:d1d7c839b0cc9e2467caac8d9d18f5df
+INFO: Chunk 135 of 184 extracted 36 Ent + 31 Rel chunk-802eef105258a49dee3dcef8ab01e6c8
+INFO:  == LLM cache == saving: default:extract:ae4c526d71178de8929c55d912e4628c
+INFO: Chunk 136 of 184 extracted 13 Ent + 12 Rel chunk-1116dfe44eecade8a16a1421f8131c1f
+INFO:  == LLM cache == saving: default:extract:ff1aba1bfb35d544052c5fd7bd66aa75
+INFO:  == LLM cache == saving: default:extract:ca3466283adbbfb758f5bf7a74b917dc
+INFO:  == LLM cache == saving: default:extract:fe4b84e0b9e1c9fba0880c5e1979bc1c
+INFO: Chunk 137 of 184 extracted 35 Ent + 35 Rel chunk-dd2b179aca7975df67854df41675c01b
+INFO:  == LLM cache == saving: default:extract:f83abfec553e38ff26be90cd087698f4
+INFO: Chunk 138 of 184 extracted 23 Ent + 21 Rel chunk-c9020997f31258e750d12bd09ce71df3
+INFO:  == LLM cache == saving: default:extract:01bf49af021a043c55456d0b0bc25f74
+INFO: Chunk 139 of 184 extracted 13 Ent + 14 Rel chunk-e1072892578dad8b67c82332a1fadd8f
+INFO:  == LLM cache == saving: default:extract:1076348aff8da973fd46ac1081a3700c
+INFO:  == LLM cache == saving: default:extract:ebb1c0b40d3f856e5d9acd33ac1cfca5
+INFO: Chunk 140 of 184 extracted 18 Ent + 18 Rel chunk-5fddf02bcb1531918dd534d46d329387
+INFO:  == LLM cache == saving: default:extract:a64c4fea487e763e0fe6cd41fcefc9f1
+INFO:  == LLM cache == saving: default:extract:2cec51a1f90bf86feeffc524ff4a9b2d
+INFO: Chunk 141 of 184 extracted 15 Ent + 15 Rel chunk-f44329129b359eb8d283921cec943a40
+INFO:  == LLM cache == saving: default:extract:b6c4ea8bf4ae2fca5918d4490f7a4c3f
+INFO:  == LLM cache == saving: default:extract:35095d09d067b10b4d25b7397c626a3e
+INFO:  == LLM cache == saving: default:extract:1f369eea914ce280c47661fdb4e140d4
+INFO: Chunk 142 of 184 extracted 18 Ent + 18 Rel chunk-2ea728e89e2a782c12b101f9bbe0b691
+INFO:  == LLM cache == saving: default:extract:b359e5512fd29dbc2970d58906f2ef89
+INFO: Chunk 143 of 184 extracted 21 Ent + 19 Rel chunk-8ecb2c78ebf6e61c98323f76d6fac821
+INFO:  == LLM cache == saving: default:extract:c9623fc1c31b681b02df09976d2974f4
+INFO:  == LLM cache == saving: default:extract:19967d0ff7fadc02748014a976c12d05
+INFO: Chunk 144 of 184 extracted 24 Ent + 25 Rel chunk-bf0701320c837eea7af51b7ede780542
+INFO:  == LLM cache == saving: default:extract:8ca71d12e0017c4d14c42795762eb05f
+INFO:  == LLM cache == saving: default:extract:9931013ce9e423d0761d4bac2b0b4fe8
+INFO: Chunk 145 of 184 extracted 16 Ent + 15 Rel chunk-b1ea68955aa430cb57a0fc660e20b88a
+INFO:  == LLM cache == saving: default:extract:0fccdae0887abc732441f03e8369f65a
+INFO:  == LLM cache == saving: default:extract:5bb56e0162e745a9b8ba8bc871812b9d
+INFO:  == LLM cache == saving: default:extract:af8423f4af4e0cae3b15238dfcaf8bc1
+INFO: Chunk 146 of 184 extracted 20 Ent + 19 Rel chunk-8a7a2095a3fbd72b6c75537432983cb2
+INFO:  == LLM cache == saving: default:extract:e022f8d13d1726850de99e1862709a17
+INFO:  == LLM cache == saving: default:extract:595d23b79e9acce6eac59395a36df139
+INFO:  == LLM cache == saving: default:extract:5030565629a6b7f1f704f64686318743
+INFO: Chunk 147 of 184 extracted 40 Ent + 39 Rel chunk-5683b49a4b2e529fec9a0f0ebdce3b1f
+INFO:  == LLM cache == saving: default:extract:9edc13f46d261ae1b3bff7d7c2694d95
+INFO: Chunk 148 of 184 extracted 22 Ent + 20 Rel chunk-4572aed94a20d00d05ad0e74714498f5
+INFO:  == LLM cache == saving: default:extract:327ff8d7587e5f90cc4e494c733dc0b0
+INFO: Chunk 149 of 184 extracted 32 Ent + 28 Rel chunk-be4ed2a6e3657e5fded64b411d1b4a58
+INFO:  == LLM cache == saving: default:extract:8d9db8e6618f01b7366962d4ebdf61f0
+INFO:  == LLM cache == saving: default:extract:4c66dc743ce1df87576c21e183d8e292
+INFO:  == LLM cache == saving: default:extract:67eaca9f1dfc172d57c1f9d5956d5802
+INFO: Chunk 150 of 184 extracted 20 Ent + 18 Rel chunk-38348ecc216bc484fe97481c65412d2d
+INFO:  == LLM cache == saving: default:extract:d537a832942458ad48d799736eb1200c
+INFO:  == LLM cache == saving: default:extract:60ce576c189e8896e1bba8845be8be45
+INFO: Chunk 151 of 184 extracted 26 Ent + 25 Rel chunk-70ec5e72faed3ca019cfe2f897dc6ae1
+INFO:  == LLM cache == saving: default:extract:5f2ea8a3678ec071ce65cd77b22141df
+INFO:  == LLM cache == saving: default:extract:0ed4c0a1175abe8002134d25026277fa
+INFO: Chunk 152 of 184 extracted 25 Ent + 30 Rel chunk-815b34e28bd30236612f80225490b93e
+INFO:  == LLM cache == saving: default:extract:f3e934567419793a7d1f76c75606b8ac
+INFO: Chunk 153 of 184 extracted 34 Ent + 29 Rel chunk-b2af592fc450c6225cf88a116dba4222
+INFO:  == LLM cache == saving: default:extract:7b309c5ce2c1d76e79383b6e5fffc1f8
+INFO:  == LLM cache == saving: default:extract:2de783ac316005c2c8268acdaebdae53
+INFO: Chunk 154 of 184 extracted 26 Ent + 16 Rel chunk-faceb1ca38eb297a8f11c3d9e39280b1
+INFO:  == LLM cache == saving: default:extract:c9784ded4c545ea8f6524720ac3ecd18
+INFO:  == LLM cache == saving: default:extract:ca206a9fefcba0d40290cc60ceba951a
+INFO:  == LLM cache == saving: default:extract:98a1a3ae4318b22ae26bded3bfaa07ab
+INFO:  == LLM cache == saving: default:extract:bb2eb18f5a91d5987be48091e2f69403
+INFO: Chunk 155 of 184 extracted 27 Ent + 23 Rel chunk-e86fb097d3f6c665653ef9d21c5d741a
+INFO:  == LLM cache == saving: default:extract:b0540039f75dd314a5fe8449da10f0ab
+INFO: Chunk 156 of 184 extracted 34 Ent + 34 Rel chunk-7c7373b1df300442ee5b1a209dd18086
+INFO:  == LLM cache == saving: default:extract:a19240167db726de4c38da3a44533eb7
+INFO:  == LLM cache == saving: default:extract:edb3a5908c77b68a65f4eec2776bea1e
+INFO: Chunk 157 of 184 extracted 26 Ent + 24 Rel chunk-4a70dc1dbc90d8b9b302678566937a6a
+INFO:  == LLM cache == saving: default:extract:6f069758375aba73f8c132e508f32a0d
+INFO: Chunk 158 of 184 extracted 20 Ent + 15 Rel chunk-36500f8f0175df89eb862ce38e39a156
+INFO:  == LLM cache == saving: default:extract:07c311f99ec38b68627452f2aa907b40
+INFO:  == LLM cache == saving: default:extract:5e1c09286f74d890175769e085814dfe
+INFO: Chunk 159 of 184 extracted 15 Ent + 14 Rel chunk-80a67cf17c3ce1c789e7dfa89aff92b1
+INFO:  == LLM cache == saving: default:extract:5c5cd54cb225cf746bbc93005cc476ef
+INFO:  == LLM cache == saving: default:extract:3aaffaffeba57ef403ac3ad69e9a2c85
+INFO:  == LLM cache == saving: default:extract:cc9a362d1f205a5584cb3652d1a1afff
+INFO: Chunk 160 of 184 extracted 20 Ent + 21 Rel chunk-1608f47b446bc44f66a9d577c0a49ba8
+INFO:  == LLM cache == saving: default:extract:cce2f5d69101b2aa633eca8ab9617721
+INFO:  == LLM cache == saving: default:extract:35e46f4e8393c6c6af132bf996307ae8
+INFO: Chunk 161 of 184 extracted 19 Ent + 19 Rel chunk-827e0039a1f1924148583217ac676fc2
+INFO:  == LLM cache == saving: default:extract:b2435d9c5ff58bb6736f0c915f54152b
+INFO: Chunk 162 of 184 extracted 26 Ent + 27 Rel chunk-3795f2b393651e033f5f6f010c239d75
+INFO:  == LLM cache == saving: default:extract:3360130ff50f37ec8c0a59f00f15332f
+INFO:  == LLM cache == saving: default:extract:ece44228b06316be42a0bdbc26a1dd2b
+INFO:  == LLM cache == saving: default:extract:1b2e22599ac82605b5c29a19680a6ed4
+INFO: Chunk 163 of 184 extracted 16 Ent + 19 Rel chunk-2b556c1f0eb9d20348cb1ee7292ca503
+INFO:  == LLM cache == saving: default:extract:89dc703aba22731328edb57f7823193a
+INFO:  == LLM cache == saving: default:extract:3c1743b39d62dbf3f9c0dfdcaddff014
+INFO: Chunk 164 of 184 extracted 13 Ent + 13 Rel chunk-82d049fda565978b7e7efa6b591b9cb3
+INFO:  == LLM cache == saving: default:extract:8bdd94f5778cbe29414a9331fa2f485f
+INFO:  == LLM cache == saving: default:extract:17e83529a95d5e4e100e4eba051177f5
+INFO: Chunk 165 of 184 extracted 13 Ent + 12 Rel chunk-b67180705ca8cb495ce8350957b26341
+INFO:  == LLM cache == saving: default:extract:f96bb045f823cc0f22725608e4cd8610
+INFO: Chunk 166 of 184 extracted 20 Ent + 19 Rel chunk-ba205ac8af079ea9bb4e997e6c22801c
+INFO:  == LLM cache == saving: default:extract:9ce1f0553785906bfc2053d6648c5c27
+INFO:  == LLM cache == saving: default:extract:adc64a606a4de8a3d3fab1a42f6fd2d9
+INFO:  == LLM cache == saving: default:extract:0b7138cbbc29388919b4174ebfde562d
+INFO: Chunk 167 of 184 extracted 26 Ent + 20 Rel chunk-83f9b7ee6c051b624000a9eed994e41b
+INFO:  == LLM cache == saving: default:extract:b20b85f13ab5daed40ba56179fc00ef2
+INFO: Chunk 168 of 184 extracted 39 Ent + 34 Rel chunk-79beda14fb0f0ed1e548b787e81e37f4
+INFO:  == LLM cache == saving: default:extract:87b6b171b90f425f5206d25a3af73175
+INFO:  == LLM cache == saving: default:extract:e57b4e5f6b3888a7952564ca2395c6a5
+INFO:  == LLM cache == saving: default:extract:741929de92173ed447cd46e0d6eff061
+INFO: Chunk 169 of 184 extracted 97 Ent + 41 Rel chunk-3ca5b1d99a827ea62d172be51268d74c
+INFO:  == LLM cache == saving: default:extract:4cbf4a18c12e04f464ef15cd77088d12
+INFO: Chunk 170 of 184 extracted 56 Ent + 44 Rel chunk-0628b65ec782240ddf0c86aaa7f66202
+INFO:  == LLM cache == saving: default:extract:dd7bddfaadd7677ad33998ca1dd819c0
+INFO:  == LLM cache == saving: default:extract:9e719680e42e549d73f4d1fd4fde06af
+INFO:  == LLM cache == saving: default:extract:b70238c58e4d3392f68542c72ea00fd7
+INFO: Chunk 171 of 184 extracted 112 Ent + 73 Rel chunk-bb315d5941c5b69b8f84601eaf8cb3d4
+INFO:  == LLM cache == saving: default:extract:39397d3e076e9dfce6802c22f0ed463e
+INFO: Chunk 172 of 184 extracted 124 Ent + 123 Rel chunk-c6ad48af6ba4b7f53de6d5de656743be
+INFO:  == LLM cache == saving: default:extract:1df6fa769b4db32829d0b46de03febc7
+INFO:  == LLM cache == saving: default:extract:9227fcc2c1ff5f5c1a70d9639ccee498
+INFO: Chunk 173 of 184 extracted 125 Ent + 34 Rel chunk-f2eea4e3da8c19285a6258958a87978f
+INFO:  == LLM cache == saving: default:extract:773e056c67683b5a018e08c574a093b3
+INFO:  == LLM cache == saving: default:extract:235605126acd8fa9ba93f888f0b0a05e
+INFO:  == LLM cache == saving: default:extract:d7780708dc56f0a032da55059b523e9d
+INFO: Chunk 174 of 184 extracted 90 Ent + 42 Rel chunk-4141079589dfe4c519d231e8bb1170d8
+INFO:  == LLM cache == saving: default:extract:54a6d4233912b28f22e82ce3097af831
+INFO:  == LLM cache == saving: default:extract:11d061f55b686a581230b4ce20e8f959
+INFO: Chunk 175 of 184 extracted 75 Ent + 59 Rel chunk-732ab0353aaffcd52668c25f9082cf58
+INFO:  == LLM cache == saving: default:extract:6555d0a6440664bced71c5b999f82f77
+INFO:  == LLM cache == saving: default:extract:96e703b32644c3e9181994daa61ea368
+INFO:  == LLM cache == saving: default:extract:dbd457f371df5e76fa6afac3ba5ce846
+INFO: Chunk 176 of 184 extracted 98 Ent + 69 Rel chunk-7fb920f4e65b5d8b5b7fa739719c22a8
+INFO:  == LLM cache == saving: default:extract:a2ed94a718c136a76a72747bf88411b2
+INFO: Chunk 177 of 184 extracted 115 Ent + 64 Rel chunk-552fad102d09434dca91bd353adf903d
+INFO:  == LLM cache == saving: default:extract:6327fdfd335d8c4bac630518f23c9749
+INFO:  == LLM cache == saving: default:extract:7aa8d419fab9546b2fc70158552c35f7
+INFO: Chunk 178 of 184 extracted 46 Ent + 46 Rel chunk-8090d4f61288d4459e60ccd3a57e9d94
+INFO:  == LLM cache == saving: default:extract:4542cb1c39914f8c4315f9f49fe143ad
+INFO:  == LLM cache == saving: default:extract:29c02806721543c2ed892be60a10ae9a
+INFO: Chunk 179 of 184 extracted 35 Ent + 31 Rel chunk-1393d724d2af8c6a0c14130da40f988f
+INFO:  == LLM cache == saving: default:extract:49b4a4f85421716b5c971188f734e1cf
+INFO: Chunk 180 of 184 extracted 90 Ent + 117 Rel chunk-a13da1d03ed85b6855f91c34d20e8e46
+INFO:  == LLM cache == saving: default:extract:b4006c524aee34e273c412241bf75b42
+INFO:  == LLM cache == saving: default:extract:3fe9f78c833ab25ba31563ef3e52dffa
+INFO: Chunk 181 of 184 extracted 45 Ent + 42 Rel chunk-21818dc72ac558d83e1e29328dd4dd6f
+INFO:  == LLM cache == saving: default:extract:6a49ea1157f43a910af1f9cfdb9a6e7d
+INFO:  == LLM cache == saving: default:extract:51a5c84fb8ae54526e9d059a0cc610bd
+INFO:  == LLM cache == saving: default:extract:95c5da045eaae37bcd64c5564e5c3cb4
+INFO:  == LLM cache == saving: default:extract:c7a71500cf426e7146e460517a9cf608
+INFO: Chunk 182 of 184 extracted 73 Ent + 17 Rel chunk-78ec5fcc7fdcaca9b1ac9607caa06416
+INFO:  == LLM cache == saving: default:extract:33e15e9ec7e7c98f99e0bc03da70e533
+INFO: Chunk 183 of 184 extracted 21 Ent + 18 Rel chunk-3bfd7c07dbbedb6b6478f8ecb9e4ec58
+INFO:  == LLM cache == saving: default:extract:654b47b49bb175c6a76e7d63bdcbe011
+INFO: Chunk 184 of 184 extracted 35 Ent + 14 Rel chunk-89d700f276a31bc463be370b62c4b9dc
+INFO: Merging stage 1/1: mercedes-e_user_manual.pdf
+INFO: Phase 1: Processing 2910 entities from doc-00f2c4144eb5b464fee06de34d9c4039 (async: 8)
+INFO:  == LLM cache == saving: default:summary:1b30ac081d491f3ff1090e2a7b5cf181
+INFO: LLMmrg: `MBUX Intelligent Human-Machine Interaction System` | 0+61
+INFO:  == LLM cache == saving: default:summary:47460569798fcb4f302ba1ca8e4a527a
+INFO: LLMmrg: `Emergency Key` | 0+9
+INFO:  == LLM cache == saving: default:summary:e52360b6fe0211a7cfbff3903b9a138f
+INFO: LLMmrg: `Vehicle` | 0+48
+INFO:  == LLM cache == saving: default:summary:3e2c6dfbc524381c84b60f88184bf42f
+INFO: LLMmrg: `Electronic Key` | 0+9
+INFO:  == LLM cache == saving: default:summary:4f769ceebac715007d4d79b9c4596244
+INFO: LLMmrg: `Professional Service Center` | 0+28
+INFO:  == LLM cache == saving: default:summary:d276c9d6e2058e7f11139287bc0a589b
+INFO: LLMmrg: `Driving Mode` | 0+14
+INFO:  == LLM cache == saving: default:summary:be4c80c5d6665db6cf116b945624150d
+INFO: LLMmrg: `Driver Display` | 0+56
+INFO:  == LLM cache == saving: default:summary:c30b2df4f2e03e904f07be72642b51d7
+INFO: LLMmrg: `MBUX Infotainment System` | 0+15
+INFO:  == LLM cache == saving: default:summary:1a90c5e626922577d693fe0951a88b98
+INFO: LLMmrg: `Plug-In Hybrid Vehicle` | 0+17
+INFO:  == LLM cache == saving: default:summary:d81e68d02a6c83b2b1ed792615516e3b
+INFO: LLMmrg: `Vehicle Speed` | 0+11
+INFO:  == LLM cache == saving: default:summary:7b35f2f8659fdac35135c6019361ef7a
+INFO: LLMmrg: `Tire Pressure` | 0+9
+INFO:  == LLM cache == saving: default:summary:d50dd08e58b95da811ea3a747b4f34b7
+INFO: LLMmrg: `High-Voltage Battery` | 0+10
+INFO:  == LLM cache == saving: default:summary:4d329b0c952aa958619840512e34b532
+INFO: LLMmrg: `Mercedes-Benz` | 0+48
+INFO:  == LLM cache == saving: default:summary:cec53913aeb2ebcdad9d03d3bd0c25a3
+INFO: LLMmrg: `Adaptive Cruise Control` | 0+19
+INFO:  == LLM cache == saving: default:summary:513f4b413403d1bacf6d234889a3989f
+INFO: LLMmrg: `Driver` | 0+19
+INFO:  == LLM cache == saving: default:summary:517e1f1e4fb198279eed3ab15d27a052
+INFO: LLMmrg: `Warning Sound` | 0+8
+INFO:  == LLM cache == saving: default:summary:d1751283a7cbb45a839493044660542d
+INFO: LLMmrg: `Engine Hood` | 0+8
+INFO:  == LLM cache == saving: default:summary:483bb0808ea131c4b72c3e84566123bb
+INFO: LLMmrg: `Engine` | 0+11
+INFO:  == LLM cache == saving: default:summary:f0ca6534a86e625359b6f0cff1550543
+INFO: LLMmrg: `Tire` | 0+12
+INFO:  == LLM cache == saving: default:summary:97733cae64abef3ea1b51daea71c8112
+INFO: LLMmrg: `Mercedes-Benz Authorized Service Center` | 0+12
+INFO:  == LLM cache == saving: default:summary:e50e6ef51b8d588b5e22cdfba93b03c7
+INFO: LLMmrg: `Warning Light` | 0+10
+INFO:  == LLM cache == saving: default:summary:51356e42035b05f2d023426af0b05215
+INFO: LLMmrg: `Parking Brake` | 0+12
+INFO:  == LLM cache == saving: default:summary:b0695e28aac0bab03ba6bd6a9b6e6e4b
+INFO: LLMmrg: `360° Camera` | 0+9
+INFO:  == LLM cache == saving: default:summary:81fd3d231be3a6ed38df7ebfcd95491e
+INFO: LLMmrg: `Central Display` | 0+30
+INFO:  == LLM cache == saving: default:summary:cb9e67e1bd00e31694429323bddc1af4
+INFO: LLMmrg: `Tire Pressure Monitoring System` | 0+12
+INFO:  == LLM cache == saving: default:summary:2ed2df3d715715593a0fd57c066a094b
+INFO: LLMmrg: `Electronic Stability Program` | 0+9
+INFO:  == LLM cache == saving: default:summary:53d9e02ce6650060d776215605bff678
+INFO: LLMmrg: `Brake Pedal` | 0+15
+INFO:  == LLM cache == saving: default:summary:b6cd6267c5a63f257c52b756cc7ba0b8
+INFO: LLMmrg: `Navigation System` | 0+10
+INFO:  == LLM cache == saving: default:summary:517c5e985829feea93bc13b3bcfc2c48
+INFO: LLMmrg: `Transmission` | 0+8
+INFO:  == LLM cache == saving: default:summary:69ca24c04d279194fa6f8f78e5d540d6
+INFO: LLMmrg: `Fuel Cap` | 0+8
+INFO:  == LLM cache == saving: default:summary:1e7f84fbefa972cb06f3c81c40f24a27
+INFO: LLMmrg: `Mercedes me App` | 0+9
+INFO:  == LLM cache == saving: default:summary:aca81b8879c3330f7564e9610d8dc026
+INFO: LLMmrg: `User Manual` | 0+18
+INFO:  == LLM cache == saving: default:summary:0ac9c7ba5bb5244047978a3cfa2981ce
+INFO: LLMmrg: `Socket Cover` | 0+8
+INFO:  == LLM cache == saving: default:summary:3ee82679831a639a1545766083f78fea
+INFO: LLMmrg: `Vehicle Identification Number` | 0+9
+INFO:  == LLM cache == saving: default:summary:4f24c68e01c48fef027dae9ef013a1f2
+INFO: LLMmrg: `High Voltage Battery` | 0+15
+INFO:  == LLM cache == saving: default:summary:7144f0e1447ae9f6057532f4574e7599
+INFO: LLMmrg: `Charging Cable` | 0+10
+INFO:  == LLM cache == saving: default:summary:2b2803cc992ad48180228c93a5615a65
+INFO: LLMmrg: `12 Volt Battery` | 0+11
+INFO:  == LLM cache == saving: default:summary:14826aa52695902a9676806ead7032dc
+INFO: LLMmrg: `System Limitations` | 0+8
+INFO:  == LLM cache == saving: default:summary:08b9d1b85f5c775c5732845525600b1a
+INFO: LLMmrg: `Mercedes-Benz Emergency Call System` | 0+9
+INFO:  == LLM cache == saving: default:summary:25b46c339b45248a10f740e276386131
+INFO: LLMmrg: `PARKTRONIC` | 0+9
+INFO:  == LLM cache == saving: default:summary:4a06af69b112122e3477f769d2e40ebc
+INFO: LLMmrg: `Seat Heater` | 0+10
+INFO:  == LLM cache == saving: default:summary:37d881103a5b8f05ca7109fce9790581
+INFO: LLMmrg: `Steering Wheel` | 0+13
+INFO:  == LLM cache == saving: default:summary:6c339800131f9fa933f28e497eb08710
+INFO: LLMmrg: `Airbag` | 0+12
+INFO:  == LLM cache == saving: default:summary:aaf42d5c837d1d3406d89cd1dd036b2c
+INFO: LLMmrg: `Child Restraint System` | 0+14
+INFO:  == LLM cache == saving: default:summary:109cb5ca60766da6e4ea8e3c5bc8bd98
+INFO: LLMmrg: `Front Passenger Seat` | 0+11
+INFO:  == LLM cache == saving: default:summary:63ca13594bb8a7febae325f51b0f6c1a
+INFO: LLMmrg: `Driver Seat` | 0+9
+INFO:  == LLM cache == saving: default:summary:a9a89fb308133ff9f22c435be12022bd
+INFO: LLMmrg: `Attention Assist System` | 0+10
+INFO:  == LLM cache == saving: default:summary:391dd699143fe7114b0a5a5afb5e1838
+INFO: LLMmrg: `Authorized Service Center` | 0+13
+INFO:  == LLM cache == saving: default:summary:bde25163a6ecfe62ae88629e9c4cde3b
+INFO: LLMmrg: `Driver Camera` | 0+10
+INFO:  == LLM cache == saving: default:summary:66e9c80ac942fcc0a0a3f54b5cbeb62e
+INFO: LLMmrg: `Electric Parking Brake` | 0+16
+INFO:  == LLM cache == saving: default:summary:a08280ac48a812fc69064203a4b9b70c
+INFO: LLMmrg: `Intelligent Parking` | 0+8
+INFO:  == LLM cache == saving: default:summary:7765433a89742086f53f6a64831b0e19
+INFO: LLMmrg: `Seat Belt` | 0+11
+INFO:  == LLM cache == saving: default:summary:23015ad6f8ed3e846a66bc4511d23600
+INFO: LLMmrg: `Lane Keeping Assist` | 0+9
+INFO:  == LLM cache == saving: default:summary:dd2bee452787c6134b4406fe5d6e9038
+INFO: LLMmrg: `Lane Change Assist` | 0+9
+INFO:  == LLM cache == saving: default:summary:979263d3ff58db5b68940e18f6459ecd
+INFO: LLMmrg: `Active Emergency Braking` | 0+14
+INFO:  == LLM cache == saving: default:summary:b497487033b2a2e62d744bd0bff955ab
+INFO: LLMmrg: `Child Safety Lock` | 0+8
+INFO:  == LLM cache == saving: default:summary:6bc1146e2e8371012e3e8d74e88a0634
+INFO: LLMmrg: `Head-Up Display` | 0+8
+INFO:  == LLM cache == saving: default:summary:8e9c618ddff6aea11176f820d9b7538b
+INFO: LLMmrg: `Hazard Warning Lights` | 0+9
+INFO:  == LLM cache == saving: default:summary:cb64ca10368d3b37efc289d7ca4615a9
+INFO: LLMmrg: `Regenerative Braking` | 0+8
+INFO:  == LLM cache == saving: default:summary:9dbf03a8eb25af429836cea2f6ccdfaf
+INFO: LLMmrg: `Cup Holder` | 0+8
+INFO:  == LLM cache == saving: default:summary:98a9abbd8b920128f5e4a903d9b94028
+INFO: LLMmrg: `Cruise Control` | 0+10
+INFO: Phase 2: Processing 4089 relations from doc-00f2c4144eb5b464fee06de34d9c4039 (async: 8)
