@@ -47,7 +47,9 @@ class ContextConfig:
 
 
 class ContextExtractor:
-    """Universal context extractor supporting multiple content source formats"""
+    """Universal context extractor supporting multiple content source formats
+        支持多种内容源格式的通用上下文提取器
+    """
 
     def __init__(self, config: ContextConfig = None, tokenizer=None):
         """Initialize context extractor
@@ -56,8 +58,8 @@ class ContextExtractor:
             config: Context extraction configuration
             tokenizer: Tokenizer for accurate token counting
         """
-        self.config = config or ContextConfig()
-        self.tokenizer = tokenizer
+        self.config = config or ContextConfig() # 使用默认配置, 如果没有传入配置，则使用默认配置
+        self.tokenizer = tokenizer  # 使用默认tokenizer
 
     def extract_context(
         self,
@@ -66,6 +68,7 @@ class ContextExtractor:
         content_format: str = "auto",
     ) -> str:
         """Extract context for current item from content source
+            从内容源中提取当前项的上下文
 
         Args:
             content_source: Source content (list, dict, or other format)
@@ -75,20 +78,25 @@ class ContextExtractor:
         Returns:
             Extracted context text
         """
-        if not content_source and not self.config.context_window:
+        if not content_source and not self.config.context_window: # 如果没有内容源，并且没有上下文窗口，则直接返回空字符串
+            logger.info("No content source or context window, skipping context extraction")
             return ""
 
         try:
             # Use format hint if provided, otherwise auto-detect
+            # 如果是mineru格式，并且内容源是列表，则调用_extract_from_content_list函数
             if content_format == "minerU" and isinstance(content_source, list):
                 return self._extract_from_content_list(
                     content_source, current_item_info
                 )
+            # 如果是text_chunks格式，并且内容源是列表，则调用_extract_from_text_chunks函数
             elif content_format == "text_chunks" and isinstance(content_source, list):
                 return self._extract_from_text_chunks(content_source, current_item_info)
+            # 如果是text格式，并且内容源是字符串，则调用_extract_from_text_source函数
             elif content_format == "text" and isinstance(content_source, str):
                 return self._extract_from_text_source(content_source, current_item_info)
-            else:
+            else: # 其他情况，则调用_extract_from_content_list函数
+                logger.info(f"content_format: {content_format}, content_source: {content_source}")
                 # Auto-detect content source format
                 if isinstance(content_source, list):
                     return self._extract_from_content_list(
@@ -115,6 +123,7 @@ class ContextExtractor:
         self, content_list: List[Dict], current_item_info: Dict
     ) -> str:
         """Extract context from MinerU-style content list
+            从MinerU风格的内容列表中提取上下文
 
         Args:
             content_list: List of content items with page_idx and type info
@@ -122,18 +131,20 @@ class ContextExtractor:
 
         Returns:
             Context text from surrounding pages/chunks
+            从周围页面/chunk中提取的上下文文本
         """
-        if self.config.context_mode == "page":
+        if self.config.context_mode == "page": # 如果上下文模式是page，则调用_extract_page_context函数
             return self._extract_page_context(content_list, current_item_info)
-        elif self.config.context_mode == "chunk":
+        elif self.config.context_mode == "chunk": # 如果上下文模式是chunk，则调用_extract_chunk_context函数
             return self._extract_chunk_context(content_list, current_item_info)
-        else:
+        else: 
             return self._extract_page_context(content_list, current_item_info)
 
     def _extract_page_context(
         self, content_list: List[Dict], current_item_info: Dict
     ) -> str:
         """Extract context based on page boundaries
+            基于页面边界提取上下文
 
         Args:
             content_list: List of content items
@@ -142,32 +153,34 @@ class ContextExtractor:
         Returns:
             Context text from surrounding pages
         """
-        current_page = current_item_info.get("page_idx", 0)
-        window_size = self.config.context_window
+        current_page = current_item_info.get("page_idx", 0) # 获取当前页面索引
+        window_size = self.config.context_window # 获取上下文窗口大小
 
-        start_page = max(0, current_page - window_size)
-        end_page = current_page + window_size + 1
+        start_page = max(0, current_page - window_size) # 计算开始页面索引
+        end_page = current_page + window_size + 1 # 计算结束页面索引
 
-        context_texts = []
+        context_texts = [] # 初始化上下文文本列表
 
         for item in content_list:
-            item_page = item.get("page_idx", 0)
-            item_type = item.get("type", "")
+            item_page = item.get("page_idx", 0) # 获取当前项的页面索引
+            item_type = item.get("type", "") # 获取当前项的类型
 
             # Check if item is within context window and matches filter criteria
             if (
                 start_page <= item_page < end_page
                 and item_type in self.config.filter_content_types
-            ):
-                text_content = self._extract_text_from_item(item)
+            ): # 如果当前项在上下文窗口范围内，并且类型匹配过滤条件，则提取文本内容
+                # Extract text content from item
+                text_content = self._extract_text_from_item(item) # 从当前项中提取文本内容
+                # 如果文本内容不为空，则添加到上下文文本列表中
                 if text_content and text_content.strip():
                     # Add page marker for better context understanding
-                    if item_page != current_page:
+                    if item_page != current_page: # 如果当前项的页面索引与当前页面索引不一致，则添加页面标记
                         context_texts.append(f"[Page {item_page}] {text_content}")
                     else:
                         context_texts.append(text_content)
 
-        context = "\n".join(context_texts)
+        context = "\n".join(context_texts) # 将上下文文本列表拼接成上下文文本字符串
         return self._truncate_context(context)
 
     def _extract_chunk_context(

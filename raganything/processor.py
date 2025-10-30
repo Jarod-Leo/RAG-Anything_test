@@ -285,41 +285,44 @@ class ProcessorMixin:
         """
         # Use config defaults if not provided
         if output_dir is None:
-            output_dir = self.config.parser_output_dir
+            output_dir = self.config.parser_output_dir # 从配置文件中获取parser_output_dir的值
         if parse_method is None:
-            parse_method = self.config.parse_method
+            parse_method = self.config.parse_method # 从配置文件中获取parse_method的值
         if display_stats is None:
-            display_stats = self.config.display_content_stats
+            display_stats = self.config.display_content_stats # 从配置文件中获取display_content_stats的值
 
         self.logger.info(f"Starting document parsing: {file_path}")
 
         file_path = Path(file_path)
-        if not file_path.exists():
+        if not file_path.exists(): # 如果文件不存在，则抛出异常
             raise FileNotFoundError(f"File not found: {file_path}")
 
         # Generate cache key based on file and configuration
+        # 生成cache_key，用于存储和检索缓存数据
         cache_key = self._generate_cache_key(file_path, parse_method, **kwargs)
 
         # Check cache first
+        # 首先检查cache
         cached_result = await self._get_cached_result(
             cache_key, file_path, parse_method, **kwargs
         )
-        if cached_result is not None:
+        if cached_result is not None: # 如果有缓存数据，则直接返回缓存数据，否则进行解析
             content_list, doc_id = cached_result
             self.logger.info(f"Using cached parsing result for: {file_path}")
-            if display_stats:
+            if display_stats: # 如果display_stats为True，则打印内容统计信息
                 self.logger.info(
                     f"* Total blocks in cached content_list: {len(content_list)}"
                 )
             return content_list, doc_id
 
         # Choose appropriate parsing method based on file extension
+        # 根据文件扩展名选择合适的解析方法
         ext = file_path.suffix.lower()
 
         try:
             doc_parser = (
                 DoclingParser() if self.config.parser == "docling" else MineruParser()
-            )
+            ) # 根据配置文件中的parser值选择DoclingParser或MineruParser
 
             # Log parser and method information
             self.logger.info(
@@ -347,7 +350,7 @@ class ProcessorMixin:
             ]:
                 self.logger.info("Detected image file, using parser for images...")
                 # Use the selected parser's image parsing capability
-                if hasattr(doc_parser, "parse_image"):
+                if hasattr(doc_parser, "parse_image"): # 如果doc_parser有parse_image方法，则使用doc_parser的parse_image方法进行解析，否则使用MinerU的parse_image方法进行解析
                     content_list = await asyncio.to_thread(
                         doc_parser.parse_image,
                         image_path=file_path,
@@ -356,6 +359,7 @@ class ProcessorMixin:
                     )
                 else:
                     # Fallback to MinerU for image parsing if current parser doesn't support it
+                    # 回退到Mineru进行解析，如果当前的parser不支持image解析，则使用Mineru进行解析
                     self.logger.warning(
                         f"{self.config.parser} parser doesn't support image parsing, falling back to MinerU"
                     )
@@ -375,7 +379,7 @@ class ProcessorMixin:
             ]:
                 self.logger.info(
                     "Detected Office or HTML document, using parser for Office/HTML..."
-                )
+                ) # 检测到Office或HTML文档，使用Office/HTML解析器进行解析
                 content_list = await asyncio.to_thread(
                     doc_parser.parse_office_doc,
                     doc_path=file_path,
@@ -384,6 +388,7 @@ class ProcessorMixin:
                 )
             else:
                 # For other or unknown formats, use generic parser
+                # 对于其他或未知的格式，使用通用解析器进行解析
                 self.logger.info(
                     f"Using generic parser for {ext} file (method={parse_method})..."
                 )
@@ -395,10 +400,10 @@ class ProcessorMixin:
                     **kwargs,
                 )
 
-        except MineruExecutionError as e:
+        except MineruExecutionError as e: # 如果Mineru执行失败，则抛出异常
             self.logger.error(f"Mineru command failed: {e}")
             raise
-        except Exception as e:
+        except Exception as e: # 如果其他异常，则抛出异常
             self.logger.error(
                 f"Error during parsing with {self.config.parser} parser: {str(e)}"
             )
@@ -411,14 +416,16 @@ class ProcessorMixin:
             raise ValueError("Parsing failed: No content was extracted")
 
         # Generate doc_id based on content
-        doc_id = self._generate_content_based_doc_id(content_list)
+        doc_id = self._generate_content_based_doc_id(content_list) # 根据内容生成doc_id，一个content_list对应一个doc_id
+        self.logger.info(f"Generated doc_id: {doc_id}")
 
         # Store result in cache
         await self._store_cached_result(
             cache_key, content_list, doc_id, file_path, parse_method, **kwargs
-        )
+        )# 将解析结果存储到缓存中
 
         # Display content statistics if requested
+        # 如果请求显示内容统计信息，则打印内容统计信息
         if display_stats:
             self.logger.info("\nContent Information:")
             self.logger.info(f"* Total blocks in content_list: {len(content_list)}")
@@ -426,9 +433,9 @@ class ProcessorMixin:
             # Count elements by type
             block_types: Dict[str, int] = {}
             for block in content_list:
-                if isinstance(block, dict):
+                if isinstance(block, dict): # 如果block是一个字典，则获取type值，否则默认为unknown
                     block_type = block.get("type", "unknown")
-                    if isinstance(block_type, str):
+                    if isinstance(block_type, str): # 如果block_type是一个字符串，则计数+1，否则不计数
                         block_types[block_type] = block_types.get(block_type, 0) + 1
 
             self.logger.info("* Content block types:")
@@ -447,13 +454,14 @@ class ProcessorMixin:
     ):
         """
         Process multimodal content (using specialized processors)
+        处理多模态内容（使用专门的处理器）
 
         Args:
-            multimodal_items: List of multimodal items
-            file_path: File path (for reference)
-            doc_id: Document ID for proper chunk association
-            pipeline_status: Pipeline status object
-            pipeline_status_lock: Pipeline status lock
+            multimodal_items: List of multimodal items，多模态项列表
+            file_path: File path (for reference)，文件路径（用于参考）
+            doc_id: Document ID for proper chunk association，文档ID用于正确的分块关联
+            pipeline_status: Pipeline status object，管道状态对象
+            pipeline_status_lock: Pipeline status lock，管道状态锁
         """
 
         if not multimodal_items:
@@ -461,10 +469,13 @@ class ProcessorMixin:
             return
 
         # Check multimodal processing status - handle LightRAG's early DocStatus.PROCESSED marking
+        # 检查多模态处理状态 - 处理LightRAG的早期DocStatus.PROCESSED标记
         try:
+            # 获取文档状态
             existing_doc_status = await self.lightrag.doc_status.get_by_id(doc_id)
-            if existing_doc_status:
+            if existing_doc_status: # 如果文档状态存在
                 # Check if multimodal content is already processed
+                # 检查多模态内容是否已经处理
                 multimodal_processed = existing_doc_status.get(
                     "multimodal_processed", False
                 )
@@ -477,6 +488,8 @@ class ProcessorMixin:
 
                 # Even if status is DocStatus.PROCESSED (text processing done),
                 # we still need to process multimodal content if not yet done
+                # 即使状态是DocStatus.PROCESSED（文本处理完成），
+                # 我们仍然需要处理多模态内容，如果尚未完成
                 doc_status = existing_doc_status.get("status", "")
                 if doc_status == DocStatus.PROCESSED and not multimodal_processed:
                     self.logger.info(
@@ -494,10 +507,12 @@ class ProcessorMixin:
             # Continue with processing if cache check fails
 
         # Use ProcessorMixin's own batch processing that can handle multiple content types
+        # 使用ProcessorMixin自己的批处理，可以处理多种内容类型
         log_message = "Starting multimodal content processing..."
         self.logger.info(log_message)
-        if pipeline_status_lock and pipeline_status:
-            async with pipeline_status_lock:
+        if pipeline_status_lock and pipeline_status: # 如果管道状态锁和管道状态都存在
+            async with pipeline_status_lock: # 使用异步上下文管理器
+                # 更新管道状态
                 pipeline_status["latest_message"] = log_message
                 pipeline_status["history_messages"].append(log_message)
 
@@ -507,14 +522,16 @@ class ProcessorMixin:
 
             await self._process_multimodal_content_batch_type_aware(
                 multimodal_items=multimodal_items, file_path=file_path, doc_id=doc_id
-            )
+            ) # 使用ProcessorMixin自己的批处理，可以处理多种内容类型
 
             # Mark multimodal content as processed and update final status
+            # 标记多模态内容为已处理，并更新最终状态
             await self._mark_multimodal_processing_complete(doc_id)
 
             log_message = "Multimodal content processing complete"
             self.logger.info(log_message)
-            if pipeline_status_lock and pipeline_status:
+            if pipeline_status_lock and pipeline_status: # 如果管道状态锁和管道状态都存在
+                # 更新管道状态
                 async with pipeline_status_lock:
                     pipeline_status["latest_message"] = log_message
                     pipeline_status["history_messages"].append(log_message)
@@ -525,7 +542,7 @@ class ProcessorMixin:
             self.logger.warning("Falling back to individual multimodal processing")
             await self._process_multimodal_content_individual(
                 multimodal_items, file_path, doc_id
-            )
+            ) # 尝试用单独的处理器处理多模态内容
 
             # Mark multimodal content as processed even after fallback
             await self._mark_multimodal_processing_complete(doc_id)
@@ -535,6 +552,7 @@ class ProcessorMixin:
     ):
         """
         Process multimodal content individually (fallback method)
+        单独处理多模态内容（回退方法）
 
         Args:
             multimodal_items: List of multimodal items
@@ -544,23 +562,26 @@ class ProcessorMixin:
         file_name = os.path.basename(file_path)
 
         # Collect all chunk results for batch processing (similar to text content processing)
+        # 收集所有分块结果用于批处理（类似于文本内容处理）
         all_chunk_results = []
         multimodal_chunk_ids = []
 
         # Get current text chunks count to set proper order indexes for multimodal chunks
-        existing_doc_status = await self.lightrag.doc_status.get_by_id(doc_id)
+        # 获取当前文本分块数，以设置适当的多模态分块索引顺序
+        existing_doc_status = await self.lightrag.doc_status.get_by_id(doc_id) # 获取文档状态
         existing_chunks_count = (
             existing_doc_status.get("chunks_count", 0) if existing_doc_status else 0
-        )
+        ) # 获取现有分块数
 
-        for i, item in enumerate(multimodal_items):
+        for i, item in enumerate(multimodal_items): # 遍历多模态项列表
             try:
-                content_type = item.get("type", "unknown")
+                content_type = item.get("type", "unknown") # 获取内容类型
                 self.logger.info(
                     f"Processing item {i+1}/{len(multimodal_items)}: {content_type} content"
-                )
+                ) # 打印处理进度信息
 
                 # Select appropriate processor
+                # 根据内容类型选择合适的处理器
                 processor = get_processor_for_type(self.modal_processors, content_type)
 
                 if processor:
@@ -569,9 +590,11 @@ class ProcessorMixin:
                         "page_idx": item.get("page_idx", 0),
                         "index": i,
                         "type": content_type,
-                    }
+                    } # 准备item_info用于上下文提取
 
                     # Process content and get chunk results instead of immediately merging
+                    # 处理内容并获取分块结果，而不是立即合并
+                    # 这里的chunk_results是ProcessorMixin的chunk_results，而不是LightRAG的chunk_results
                     (
                         enhanced_caption,
                         entity_info,
@@ -588,9 +611,10 @@ class ProcessorMixin:
                     )
 
                     # Collect chunk results for batch processing
-                    all_chunk_results.extend(chunk_results)
+                    all_chunk_results.extend(chunk_results) # 收集分块结果用于批处理
 
                     # Extract chunk ID from the entity_info (actual chunk_id created by processor)
+                    # 从entity_info中提取分块ID（由处理器创建的实际分块ID）
                     if entity_info and "chunk_id" in entity_info:
                         chunk_id = entity_info["chunk_id"]
                         multimodal_chunk_ids.append(chunk_id)
@@ -609,22 +633,26 @@ class ProcessorMixin:
                 continue
 
         # Update doc_status to include multimodal chunks in the standard chunks_list
+        # 更新doc_status以包含多模态分块在标准chunks_list中
         if multimodal_chunk_ids:
             try:
                 # Get current document status
+                # 获得当前文档状态
                 current_doc_status = await self.lightrag.doc_status.get_by_id(doc_id)
 
-                if current_doc_status:
+                if current_doc_status: # 如果当前文档状态存在
                     existing_chunks_list = current_doc_status.get("chunks_list", [])
                     existing_chunks_count = current_doc_status.get("chunks_count", 0)
 
                     # Add multimodal chunks to the standard chunks_list
+                    # 将多模态分块添加到标准chunks_list中
                     updated_chunks_list = existing_chunks_list + multimodal_chunk_ids
                     updated_chunks_count = existing_chunks_count + len(
                         multimodal_chunk_ids
                     )
 
                     # Update document status with integrated chunk list
+                    # 使用集成分块列表更新文档状态，更新doc_status
                     await self.lightrag.doc_status.upsert(
                         {
                             doc_id: {
@@ -637,6 +665,7 @@ class ProcessorMixin:
                     )
 
                     # Ensure doc_status update is persisted to disk
+                    # 确保doc_status更新已持久化到磁盘
                     await self.lightrag.doc_status.index_done_callback()
 
                     self.logger.info(
@@ -649,6 +678,7 @@ class ProcessorMixin:
                 )
 
         # Batch merge all multimodal content results (similar to text content processing)
+        # 批量合并所有多模态内容结果（类似于文本内容处理）
         if all_chunk_results:
             from lightrag.operate import merge_nodes_and_edges
             from lightrag.kg.shared_storage import (
@@ -657,6 +687,7 @@ class ProcessorMixin:
             )
 
             # Get pipeline status and lock from shared storage
+            # 从共享存储中获取管道状态和锁
             pipeline_status = await get_namespace_data("pipeline_status")
             pipeline_status_lock = get_pipeline_status_lock()
 
@@ -682,6 +713,7 @@ class ProcessorMixin:
         self.logger.info("Individual multimodal content processing complete")
 
         # Mark multimodal content as processed
+        # 标记多模态内容为已处理
         await self._mark_multimodal_processing_complete(doc_id)
 
     async def _process_multimodal_content_batch_type_aware(

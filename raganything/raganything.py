@@ -97,7 +97,8 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
     """Flag to track if parser installation has been checked."""
 
     def __post_init__(self):
-        """Post-initialization setup following LightRAG pattern"""
+        """Post-initialization setup following LightRAG pattern
+        """
         # Initialize configuration if not provided
         if self.config is None:
             self.config = RAGAnythingConfig()
@@ -111,13 +112,13 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
         # Set up document parser
         self.doc_parser = (
             DoclingParser() if self.config.parser == "docling" else MineruParser()
-        )
+        ) # 设置文档解析器，如果配置为docling，则使用DoclingParser，否则使用MineruParser
 
         # Register close method for cleanup
-        atexit.register(self.close)
+        atexit.register(self.close) # 注册关闭方法以进行清理
 
         # Create working directory if needed
-        if not os.path.exists(self.working_dir):
+        if not os.path.exists(self.working_dir): 
             os.makedirs(self.working_dir)
             self.logger.info(f"Created working directory: {self.working_dir}")
 
@@ -138,7 +139,7 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
         try:
             import asyncio
 
-            if asyncio.get_event_loop().is_running():
+            if asyncio.get_event_loop().is_running(): # 如果事件循环正在运行，则创建一个任务来进行清理
                 # If we're in an async context, schedule cleanup
                 asyncio.create_task(self.finalize_storages())
             else:
@@ -149,7 +150,9 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
             print(f"Warning: Failed to finalize RAGAnything storages: {e}")
 
     def _create_context_config(self) -> ContextConfig:
-        """Create context configuration from RAGAnything config"""
+        """Create context configuration from RAGAnything config
+           创建上下文配置，从RAGAnything配置中获取上下文配置
+        """
         return ContextConfig(
             context_window=self.config.context_window,
             context_mode=self.config.context_mode,
@@ -160,107 +163,119 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
         )
 
     def _create_context_extractor(self) -> ContextExtractor:
-        """Create context extractor with tokenizer from LightRAG"""
-        if self.lightrag is None:
+        """Create context extractor with tokenizer from LightRAG
+           创建上下文提取器，使用LightRAG中的tokenizer
+        """
+        if self.lightrag is None: # 如果lightrag为None，则抛出异常，因为上下文提取器需要lightrag中的tokenizer 
             raise ValueError(
                 "LightRAG must be initialized before creating context extractor"
             )
 
-        context_config = self._create_context_config()
+        context_config = self._create_context_config() # 创建上下文配置
         return ContextExtractor(
             config=context_config, tokenizer=self.lightrag.tokenizer
-        )
+        ) 
 
     def _initialize_processors(self):
-        """Initialize multimodal processors with appropriate model functions"""
+        """Initialize multimodal processors with appropriate model functions
+           初始化多模态处理器，使用适当的模型函数
+        """
         if self.lightrag is None:
             raise ValueError(
                 "LightRAG instance must be initialized before creating processors"
             )
 
         # Create context extractor
-        self.context_extractor = self._create_context_extractor()
+        self.context_extractor = self._create_context_extractor() # 创建上下文提取器
 
         # Create different multimodal processors based on configuration
-        self.modal_processors = {}
+        self.modal_processors = {} # 初始化多模态处理器字典
 
-        if self.config.enable_image_processing:
+        if self.config.enable_image_processing: # 如果启用了图像处理，则创建图像处理器
             self.modal_processors["image"] = ImageModalProcessor(
                 lightrag=self.lightrag,
                 modal_caption_func=self.vision_model_func or self.llm_model_func,
                 context_extractor=self.context_extractor,
-            )
+            ) # 创建图像处理器，使用vision_model_func或llm_model_func作为模型函数，context_extractor为上下文提取器
 
-        if self.config.enable_table_processing:
+        if self.config.enable_table_processing: # 如果启用了表格处理，则创建表格处理器
             self.modal_processors["table"] = TableModalProcessor(
                 lightrag=self.lightrag,
                 modal_caption_func=self.llm_model_func,
                 context_extractor=self.context_extractor,
-            )
+            ) # 创建表格处理器，使用llm_model_func作为模型函数，context_extractor为上下文提取器
 
-        if self.config.enable_equation_processing:
+        if self.config.enable_equation_processing: # 如果启用了方程处理，则创建方程处理器
             self.modal_processors["equation"] = EquationModalProcessor(
                 lightrag=self.lightrag,
                 modal_caption_func=self.llm_model_func,
                 context_extractor=self.context_extractor,
-            )
+            ) # 创建方程处理器，使用llm_model_func作为模型函数，context_extractor为上下文提取器
 
         # Always include generic processor as fallback
+        # 始终包含通用处理器作为回退处理器
+        # 通用处理器会将所有未知的模态内容都处理为通用内容，然后再进行处理
         self.modal_processors["generic"] = GenericModalProcessor(
             lightrag=self.lightrag,
             modal_caption_func=self.llm_model_func,
             context_extractor=self.context_extractor,
-        )
+        ) # 创建通用处理器，使用llm_model_func作为模型函数，context_extractor为上下文提取器
 
         self.logger.info("Multimodal processors initialized with context support")
         self.logger.info(f"Available processors: {list(self.modal_processors.keys())}")
         self.logger.info(f"Context configuration: {self._create_context_config()}")
 
     def update_config(self, **kwargs):
-        """Update configuration with new values"""
+        """Update configuration with new values
+           更新配置，使用新的值
+        """
         for key, value in kwargs.items():
-            if hasattr(self.config, key):
+            if hasattr(self.config, key): # 如果配置中存在key，则更新配置，否则打印警告信息
                 setattr(self.config, key, value)
                 self.logger.debug(f"Updated config: {key} = {value}")
             else:
                 self.logger.warning(f"Unknown config parameter: {key}")
 
     async def _ensure_lightrag_initialized(self):
-        """Ensure LightRAG instance is initialized, create if necessary"""
+        """Ensure LightRAG instance is initialized, create if necessary
+           确保LightRAG实例已初始化，如果尚未初始化，则创建一个新的实例
+        """
         try:
             # Check parser installation first
-            if not self._parser_installation_checked:
-                if not self.doc_parser.check_installation():
+            if not self._parser_installation_checked: # 如果解析器安装未检查过，则检查解析器安装
+                # Check if parser is installed
+                if not self.doc_parser.check_installation(): # 如果解析器未安装，则打印错误信息，并返回错误信息
                     error_msg = (
                         f"Parser '{self.config.parser}' is not properly installed. "
                         "Please install it using 'pip install' or 'uv pip install'."
                     )
                     self.logger.error(error_msg)
-                    return {"success": False, "error": error_msg}
+                    return {"success": False, "error": error_msg} # 返回错误信息
 
-                self._parser_installation_checked = True
+                self._parser_installation_checked = True # 将解析器安装标记设置为True
                 self.logger.info(f"Parser '{self.config.parser}' installation verified")
 
-            if self.lightrag is not None:
+            if self.lightrag is not None: # 如果lightrag不为None，则检查lightrag是否初始化
                 # LightRAG was pre-provided, but we need to ensure it's properly initialized
                 try:
                     # Ensure LightRAG storages are initialized
                     if (
-                        not hasattr(self.lightrag, "_storages_status")
-                        or self.lightrag._storages_status.name != "INITIALIZED"
-                    ):
+                        not hasattr(self.lightrag, "_storages_status") 
+                        or self.lightrag._storages_status.name != "INITIALIZED" 
+                    ): # 如果lightrag._storages_status不存在或状态不是INITIALIZED，则初始化storages
                         self.logger.info(
                             "Initializing storages for pre-provided LightRAG instance"
                         )
-                        await self.lightrag.initialize_storages()
+                        await self.lightrag.initialize_storages() # 初始化storages
                         from lightrag.kg.shared_storage import (
                             initialize_pipeline_status,
                         )
 
-                        await initialize_pipeline_status()
+                        await initialize_pipeline_status() # 初始化pipeline_status
 
                     # Initialize parse cache if not already done
-                    if self.parse_cache is None:
+                    if self.parse_cache is None: # 如果parse_cache为None，则初始化parse_cache
+                        # Initialize parse cache
                         self.logger.info(
                             "Initializing parse cache for pre-provided LightRAG instance"
                         )
@@ -271,8 +286,8 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
                                 global_config=self.lightrag.__dict__,
                                 embedding_func=self.embedding_func,
                             )
-                        )
-                        await self.parse_cache.initialize()
+                        ) # 初始化parse_cache，使用embedding_func作为embedding函数
+                        await self.parse_cache.initialize() # 初始化parse_cache
 
                     # Initialize processors if not already done
                     if not self.modal_processors:
@@ -288,6 +303,7 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
                     return {"success": False, "error": error_msg}
 
             # Validate required functions for creating new LightRAG instance
+            # 验证创建新LightRAG实例所需的函数
             if self.llm_model_func is None:
                 error_msg = "llm_model_func must be provided when LightRAG is not pre-initialized"
                 self.logger.error(error_msg)
@@ -301,6 +317,7 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
             from lightrag.kg.shared_storage import initialize_pipeline_status
 
             # Prepare LightRAG initialization parameters
+            # 准备LightRAG初始化参数
             lightrag_params = {
                 "working_dir": self.working_dir,
                 "llm_model_func": self.llm_model_func,
@@ -308,22 +325,23 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
             }
 
             # Merge user-provided lightrag_kwargs, which can override defaults
+            # 合并用户提供的lightrag_kwargs，可以覆盖默认值
             lightrag_params.update(self.lightrag_kwargs)
 
             # Log the parameters being used for initialization (excluding sensitive data)
             log_params = {
                 k: v
                 for k, v in lightrag_params.items()
-                if not callable(v)
-                and k not in ["llm_model_kwargs", "vector_db_storage_cls_kwargs"]
-            }
+                if not callable(v) # 如果v不是函数，则打印
+                and k not in ["llm_model_kwargs", "vector_db_storage_cls_kwargs"] # 如果k不是llm_model_kwargs和vector_db_storage_cls_kwargs，则不打印
+            } # 过滤掉函数和敏感数据
             self.logger.info(f"Initializing LightRAG with parameters: {log_params}")
 
             try:
                 # Create LightRAG instance with merged parameters
-                self.lightrag = LightRAG(**lightrag_params)
-                await self.lightrag.initialize_storages()
-                await initialize_pipeline_status()
+                self.lightrag = LightRAG(**lightrag_params) # 创建LightRAG实例，使用lightrag_params作为参数
+                await self.lightrag.initialize_storages() # 初始化storages
+                await initialize_pipeline_status() # 初始化pipeline_status
 
                 # Initialize parse cache storage using LightRAG's KV storage
                 self.parse_cache = self.lightrag.key_string_value_json_storage_cls(
@@ -331,11 +349,11 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
                     workspace=self.lightrag.workspace,
                     global_config=self.lightrag.__dict__,
                     embedding_func=self.embedding_func,
-                )
-                await self.parse_cache.initialize()
+                ) # 初始化parse_cache，使用embedding_func作为embedding函数
+                await self.parse_cache.initialize() # 初始化parse_cache
 
                 # Initialize processors after LightRAG is ready
-                self._initialize_processors()
+                self._initialize_processors() # 初始化处理器
 
                 self.logger.info(
                     "LightRAG, parse cache, and multimodal processors initialized"
@@ -374,22 +392,24 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
             - Manual calling is recommended in production environments
             - All finalization tasks run concurrently for better performance
         """
+        # 这个函数是用来在程序退出时，关闭所有存储的，包括parse_cache和LightRAG的内部存储
         try:
             tasks = []
 
             # Finalize parse cache if it exists
             if self.parse_cache is not None:
-                tasks.append(self.parse_cache.finalize())
-                self.logger.debug("Scheduled parse cache finalization")
+                tasks.append(self.parse_cache.finalize()) # 将parse_cache.finalize()添加到tasks列表中
+                self.logger.debug("Scheduled parse cache finalization") # 打印调试信息
 
             # Finalize LightRAG storages if LightRAG is initialized
+            # 如果LightRAG已经初始化，则关闭LightRAG的内部存储
             if self.lightrag is not None:
-                tasks.append(self.lightrag.finalize_storages())
+                tasks.append(self.lightrag.finalize_storages()) # 将lightrag.finalize_storages()添加到tasks列表中
                 self.logger.debug("Scheduled LightRAG storages finalization")
 
             # Run all finalization tasks concurrently
             if tasks:
-                await asyncio.gather(*tasks)
+                await asyncio.gather(*tasks) # 等待所有任务完成
                 self.logger.info("Successfully finalized all RAGAnything storages")
             else:
                 self.logger.debug("No storages to finalize")
@@ -401,20 +421,28 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
     def check_parser_installation(self) -> bool:
         """
         Check if the configured parser is properly installed
+        检查配置的解析器是否正确安装
 
         Returns:
             bool: True if the configured parser is properly installed
         """
-        return self.doc_parser.check_installation()
+        return self.doc_parser.check_installation() # 检查配置的解析器是否正确安装
 
     def verify_parser_installation_once(self) -> bool:
-        if not self._parser_installation_checked:
-            if not self.doc_parser.check_installation():
+        """
+        Verify the parser installation once
+        验证解析器安装一次
+        
+        Returns:
+            bool: True if the parser is properly installed
+        """
+        if not self._parser_installation_checked: # 如果解析器安装未检查过，则检查安装
+            if not self.doc_parser.check_installation(): # 检查解析器安装,如果安装不正确，则抛出异常
                 raise RuntimeError(
                     f"Parser '{self.config.parser}' is not properly installed. "
                     "Please install it using pip install or uv pip install."
                 )
-            self._parser_installation_checked = True
+            self._parser_installation_checked = True # 将_parser_installation_checked设置为True，表示解析器安装已检查过
             self.logger.info(f"Parser '{self.config.parser}' installation verified")
         return True
 
@@ -422,11 +450,11 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
         """Get current configuration information"""
         config_info = {
             "directory": {
-                "working_dir": self.config.working_dir,
-                "parser_output_dir": self.config.parser_output_dir,
+                "working_dir": self.config.working_dir, # 工作目录
+                "parser_output_dir": self.config.parser_output_dir, # 解析器输出目录
             },
             "parsing": {
-                "parser": self.config.parser,
+                "parser": self.config.parser, # 解析器
                 "parse_method": self.config.parse_method,
                 "display_content_stats": self.config.display_content_stats,
             },
@@ -454,7 +482,7 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
         }
 
         # Add LightRAG configuration if available
-        if self.lightrag_kwargs:
+        if self.lightrag_kwargs: # 如果lightrag_kwargs不为空，则添加LightRAG配置
             # Filter out sensitive data and callable objects for display
             safe_kwargs = {
                 k: v
@@ -478,20 +506,21 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
         self, content_source, content_format: str = "auto"
     ):
         """Set content source for context extraction in all modal processors
+           设置所有模态处理器的上下文提取内容源
 
         Args:
             content_source: Source content for context extraction (e.g., MinerU content list)
             content_format: Format of content source ("minerU", "text_chunks", "auto")
         """
-        if not self.modal_processors:
+        if not self.modal_processors: # 如果模态处理器为空，则打印警告信息，并返回
             self.logger.warning(
                 "Modal processors not initialized. Content source will be set when processors are created."
             )
             return
 
-        for processor_name, processor in self.modal_processors.items():
+        for processor_name, processor in self.modal_processors.items(): # 遍历所有模态处理器
             try:
-                processor.set_content_source(content_source, content_format)
+                processor.set_content_source(content_source, content_format) # 设置模态处理器的内容源和格式
                 self.logger.debug(f"Set content source for {processor_name} processor")
             except Exception as e:
                 self.logger.error(
@@ -510,7 +539,7 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
                 (context_window, context_mode, max_context_tokens, etc.)
         """
         # Update the main config
-        for key, value in context_kwargs.items():
+        for key, value in context_kwargs.items(): # 遍历context_kwargs中的所有键值对
             if hasattr(self.config, key):
                 setattr(self.config, key, value)
                 self.logger.debug(f"Updated context config: {key} = {value}")
@@ -518,7 +547,7 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
                 self.logger.warning(f"Unknown context config parameter: {key}")
 
         # Recreate context extractor with new config if processors are initialized
-        if self.lightrag and self.modal_processors:
+        if self.lightrag and self.modal_processors: # 如果LightRAG和模态处理器都已初始化，则重新创建上下文提取器
             try:
                 self.context_extractor = self._create_context_extractor()
                 # Update all processors with new context extractor
