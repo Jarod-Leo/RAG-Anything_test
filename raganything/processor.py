@@ -207,10 +207,10 @@ class ProcessorMixin:
         Store parsing result in cache
 
         Args:
-            cache_key: Cache key to store under
+            cache_key: Cache key to store under，缓存key
             content_list: Content list to cache
             doc_id: Content-based document ID
-            file_path: Path to the file for mtime storage
+            file_path: Path to the file for mtime storage，存储文件路径
             parse_method: Parse method used
             **kwargs: Additional parser parameters
         """
@@ -385,7 +385,7 @@ class ProcessorMixin:
                     doc_path=file_path,
                     output_dir=output_dir,
                     **kwargs,
-                )
+                ) # 使用doc_parser的parse_office_doc方法进行解析
             else:
                 # For other or unknown formats, use generic parser
                 # 对于其他或未知的格式，使用通用解析器进行解析
@@ -572,7 +572,8 @@ class ProcessorMixin:
         existing_chunks_count = (
             existing_doc_status.get("chunks_count", 0) if existing_doc_status else 0
         ) # 获取现有分块数
-
+        # 记录当前文档分块数
+        logger.info(f"Current document {doc_id} has {existing_chunks_count} chunks")
         for i, item in enumerate(multimodal_items): # 遍历多模态项列表
             try:
                 content_type = item.get("type", "unknown") # 获取内容类型
@@ -706,9 +707,9 @@ class ProcessorMixin:
                 current_file_number=1,
                 total_files=1,
                 file_path=file_name,
-            )
+            ) # 合并节点和边
 
-            await self.lightrag._insert_done()
+            await self.lightrag._insert_done() # 插入完成
 
         self.logger.info("Individual multimodal content processing complete")
 
@@ -722,6 +723,8 @@ class ProcessorMixin:
         """
         Type-aware batch processing that selects correct processors based on content type.
         This is the corrected implementation that handles different modality types properly.
+        类型感知批处理，根据内容类型选择正确的处理器。
+        这是修正的实现，可以正确处理不同的模态类型。
 
         Args:
             multimodal_items: List of multimodal items with different types
@@ -733,8 +736,9 @@ class ProcessorMixin:
             return
 
         # Get existing chunks count for proper order indexing
+        # 获取现有分块数以获得适当的顺序索引
         try:
-            existing_doc_status = await self.lightrag.doc_status.get_by_id(doc_id)
+            existing_doc_status = await self.lightrag.doc_status.get_by_id(doc_id) 
             existing_chunks_count = (
                 existing_doc_status.get("chunks_count", 0) if existing_doc_status else 0
             )
@@ -742,23 +746,27 @@ class ProcessorMixin:
             existing_chunks_count = 0
 
         # Use LightRAG's concurrency control
-        semaphore = asyncio.Semaphore(getattr(self.lightrag, "max_parallel_insert", 2))
+        # 使用LightRAG的并发控制
+        semaphore = asyncio.Semaphore(getattr(self.lightrag, "max_parallel_insert", 2)) # 获取max_parallel_insert的值，默认为2
 
         # Progress tracking variables
-        total_items = len(multimodal_items)
-        completed_count = 0
-        progress_lock = asyncio.Lock()
+        # 进度跟踪变量
+        total_items = len(multimodal_items) # 总的item
+        completed_count = 0 # 完成的数量
+        progress_lock = asyncio.Lock() # 进度锁，用来控制进度更新
 
         # Log processing start
         self.logger.info(f"Starting to process {total_items} multimodal content items")
 
         # Stage 1: Concurrent generation of descriptions using correct processors for each type
+        # 阶段1：使用正确处理器为每个类型并发生成描述
         async def process_single_item_with_correct_processor(
             item: Dict[str, Any], index: int, file_path: str
         ):
             """Process single item using the correct processor for its type"""
             nonlocal completed_count
-            async with semaphore:
+            async with semaphore: # 使用信号量控制并发，防止过多插入
+                # Get content type and select correct processor based on type
                 try:
                     content_type = item.get("type", "unknown")
 
@@ -780,6 +788,7 @@ class ProcessorMixin:
                     }
 
                     # Call the correct processor's description generation method
+                    # 调用正确处理器的描述生成方法
                     (
                         description,
                         entity_info,
@@ -791,11 +800,12 @@ class ProcessorMixin:
                     )
 
                     # Update progress (non-blocking)
+                    # 更新进度（非阻塞）
                     async with progress_lock:
                         completed_count += 1
                         if (
-                            completed_count % max(1, total_items // 10) == 0
-                            or completed_count == total_items
+                            completed_count % max(1, total_items // 10) == 0 # 每10%更新一次进度
+                            or completed_count == total_items # 当完成所有item时，更新进度为100%
                         ):
                             progress_percent = (completed_count / total_items) * 100
                             self.logger.info(
@@ -816,6 +826,7 @@ class ProcessorMixin:
 
                 except Exception as e:
                     # Update progress even on error (non-blocking)
+                    # 在错误时更新进度（非阻塞）
                     async with progress_lock:
                         completed_count += 1
                         if (
@@ -833,6 +844,7 @@ class ProcessorMixin:
                     return None
 
         # Process all items concurrently with correct processors
+        # 使用正确处理器并发处理所有item
         tasks = [
             asyncio.create_task(
                 process_single_item_with_correct_processor(item, i, file_path)
@@ -840,12 +852,14 @@ class ProcessorMixin:
             for i, item in enumerate(multimodal_items)
         ]
 
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+        results = await asyncio.gather(*tasks, return_exceptions=True)  # 等待所有任务完成，返回结果
 
         # Filter successful results
-        multimodal_data_list = []
+        # 过滤成功结果
+        self.logger.info(f"Got {len(results)} results")
+        multimodal_data_list = [] # 存储成功结果
         for result in results:
-            if isinstance(result, Exception):
+            if isinstance(result, Exception): # 如果结果是异常，打印错误信息，并跳过
                 self.logger.error(f"Task failed: {result}")
                 continue
             if result is not None:
@@ -860,43 +874,53 @@ class ProcessorMixin:
         )
 
         # Stage 2: Convert to LightRAG chunks format
+        # 阶段2：转换为LightRAG分块格式
         lightrag_chunks = self._convert_to_lightrag_chunks_type_aware(
             multimodal_data_list, file_path, doc_id
         )
 
         # Stage 3: Store chunks to LightRAG storage
+        # 阶段3：将分块存储到LightRAG存储中
         await self._store_chunks_to_lightrag_storage_type_aware(lightrag_chunks)
 
         # Stage 3.5: Store multimodal main entities to entities_vdb and full_entities
+        # 阶段3.5：将多模态主实体存储到entities_vdb和full_entities中
         await self._store_multimodal_main_entities(
             multimodal_data_list, lightrag_chunks, file_path, doc_id
         )
 
         # Track chunk IDs for doc_status update
+        # 跟踪doc_status更新所需的chunk IDs
         chunk_ids = list(lightrag_chunks.keys())
 
         # Stage 4: Use LightRAG's batch entity relation extraction
+        # 阶段4：使用LightRAG的批量实体关系提取
         chunk_results = await self._batch_extract_entities_lightrag_style_type_aware(
             lightrag_chunks
         )
 
         # Stage 5: Add belongs_to relations (multimodal-specific)
+        # 阶段5：添加属于关系（多模态特定）
         enhanced_chunk_results = await self._batch_add_belongs_to_relations_type_aware(
             chunk_results, multimodal_data_list
         )
 
         # Stage 6: Use LightRAG's batch merge
+        # 阶段6：使用LightRAG的批量合并
         await self._batch_merge_lightrag_style_type_aware(
             enhanced_chunk_results, file_path, doc_id
         )
 
         # Stage 7: Update doc_status with integrated chunks_list
+        # 阶段7：使用整合的chunks_list更新doc_status
         await self._update_doc_status_with_chunks_type_aware(doc_id, chunk_ids)
 
     def _convert_to_lightrag_chunks_type_aware(
         self, multimodal_data_list: List[Dict[str, Any]], file_path: str, doc_id: str
     ) -> Dict[str, Any]:
-        """Convert multimodal data to LightRAG standard chunks format"""
+        """Convert multimodal data to LightRAG standard chunks format
+            将多模态数据转换为LightRAG标准分块格式
+        """
 
         chunks = {}
 
@@ -908,14 +932,17 @@ class ProcessorMixin:
             original_item = data["original_item"]
 
             # Apply the appropriate chunk template based on content type
+            # 根据内容类型应用适当的分块模板
             formatted_chunk_content = self._apply_chunk_template(
                 content_type, original_item, description
             )
 
             # Generate chunk_id
+            # 生成chunk_id
             chunk_id = compute_mdhash_id(formatted_chunk_content, prefix="chunk-")
 
             # Calculate tokens
+            # 计算token
             tokens = len(self.lightrag.tokenizer.encode(formatted_chunk_content))
 
             # Build LightRAG standard chunk format
@@ -923,7 +950,7 @@ class ProcessorMixin:
                 "content": formatted_chunk_content,  # Now uses the templated content
                 "tokens": tokens,
                 "full_doc_id": doc_id,
-                "chunk_order_index": chunk_order_index,
+                "chunk_order_index": chunk_order_index, # 添加chunk_order_index字段
                 "file_path": os.path.basename(file_path),
                 "llm_cache_list": [],  # LightRAG will populate this field
                 # Multimodal-specific metadata
@@ -943,11 +970,12 @@ class ProcessorMixin:
     ) -> str:
         """
         Apply the appropriate chunk template based on content type
+        根据内容类型应用适当的分块模板
 
         Args:
             content_type: Type of content (image, table, equation, generic)
             original_item: Original multimodal item data
-            description: Enhanced description generated by the processor
+            description: Enhanced description generated by the processor，通过processor生成的增强描述
 
         Returns:
             Formatted chunk content using the appropriate template
@@ -959,17 +987,17 @@ class ProcessorMixin:
                 image_path = original_item.get("img_path", "")
                 captions = original_item.get(
                     "image_caption", original_item.get("img_caption", [])
-                )
+                ) # 获取图片的caption
                 footnotes = original_item.get(
                     "image_footnote", original_item.get("img_footnote", [])
-                )
+                ) # 获取图片的footnote
 
                 return PROMPTS["image_chunk"].format(
                     image_path=image_path,
                     captions=", ".join(captions) if captions else "None",
                     footnotes=", ".join(footnotes) if footnotes else "None",
                     enhanced_caption=description,
-                )
+                ) # 使用模板格式化单个分块内容
 
             elif content_type == "table":
                 table_img_path = original_item.get("img_path", "")
@@ -1001,7 +1029,7 @@ class ProcessorMixin:
                 content = str(original_item.get("content", original_item))
 
                 return PROMPTS["generic_chunk"].format(
-                    content_type=content_type.title(),
+                    content_type=content_type.title(), # 将content_type转换为首字母大写的形式
                     content=content,
                     enhanced_caption=description,
                 )
@@ -1016,12 +1044,16 @@ class ProcessorMixin:
     async def _store_chunks_to_lightrag_storage_type_aware(
         self, chunks: Dict[str, Any]
     ):
-        """Store chunks to storage"""
+        """Store chunks to storage
+            将chunks存储到存储中
+        """
         try:
             # Store in text_chunks storage (required for extract_entities)
+            # 将chunks存储到text_chunks存储中（用于extract_entities）
             await self.lightrag.text_chunks.upsert(chunks)
 
             # Store in chunks vector database for retrieval
+            # 将chunks存储到chunks向量数据库中，用于检索
             await self.lightrag.chunks_vdb.upsert(chunks)
 
             self.logger.debug(f"Stored {len(chunks)} multimodal chunks to storage")
@@ -1040,6 +1072,9 @@ class ProcessorMixin:
         """
         Store multimodal main entities to entities_vdb and full_entities.
         This ensures that entities like "TableName (table)" are properly indexed.
+        
+        将多模态主实体存储到entities_vdb和full_entities中。
+        这确保了像“TableName（表）”这样的实体被正确地索引。
 
         Args:
             multimodal_data_list: List of processed multimodal data with entity info
@@ -1051,6 +1086,7 @@ class ProcessorMixin:
             return
 
         # Create entities_vdb entries for all multimodal main entities
+        # 为所有多模态主实体创建entities_vdb条目
         entities_to_store = {}
 
         for data in multimodal_data_list:
@@ -1061,6 +1097,7 @@ class ProcessorMixin:
             original_item = data["original_item"]
 
             # Apply the same chunk template to get the formatted content
+            # 使用相同的分块模板获取格式化的内容
             formatted_chunk_content = self._apply_chunk_template(
                 content_type, original_item, description
             )
@@ -1075,12 +1112,12 @@ class ProcessorMixin:
             entity_data = {
                 "entity_name": entity_name,
                 "entity_type": entity_info.get("entity_type", content_type),
-                "content": entity_info.get("summary", description),
+                "content": entity_info.get("summary", description), # 用entity_info中的summary替换description
                 "source_id": chunk_id,
                 "file_path": os.path.basename(file_path),
             }
 
-            entities_to_store[entity_id] = entity_data
+            entities_to_store[entity_id] = entity_data # 将entity_id和entity_data存储到entities_to_store中
 
         if entities_to_store:
             try:
@@ -1089,6 +1126,7 @@ class ProcessorMixin:
                     entity_name = entity_data["entity_name"]
 
                     # Create node data for knowledge graph
+                    # 为知识图谱创建节点数据
                     node_data = {
                         "entity_id": entity_name,
                         "entity_type": entity_data["entity_type"],
@@ -1099,15 +1137,18 @@ class ProcessorMixin:
                     }
 
                     # Store in knowledge graph
+                    # 将node_data存储到知识图谱中
                     await self.lightrag.chunk_entity_relation_graph.upsert_node(
                         entity_name, node_data
                     )
 
                 # Store in entities_vdb
-                await self.lightrag.entities_vdb.upsert(entities_to_store)
-                await self.lightrag.entities_vdb.index_done_callback()
+                await self.lightrag.entities_vdb.upsert(entities_to_store) # 将entities_to_store存储到entities_vdb中
+                await self.lightrag.entities_vdb.index_done_callback() # 调用entities_vdb的index_done_callback函数，以便在索引完成后执行一些操作
 
                 # NEW: Store multimodal main entities in full_entities storage
+                # 将multimodal main entities存储到full_entities存储中
+                # 如果doc_id存在，则将entities_to_store存储到full_entities中，否则，不存储
                 if doc_id and self.lightrag.full_entities:
                     await self._store_multimodal_entities_to_full_entities(
                         entities_to_store, doc_id
@@ -1126,6 +1167,8 @@ class ProcessorMixin:
     ):
         """
         Store multimodal main entities to full_entities storage.
+        
+        将multimodal main entities存储到full_entities存储中。
 
         Args:
             entities_to_store: Dictionary of entities to store
@@ -1133,6 +1176,7 @@ class ProcessorMixin:
         """
         try:
             # Get current full_entities data for this document
+            # 获取当前full_entities存储中此文档的数据
             current_doc_entities = await self.lightrag.full_entities.get_by_id(doc_id)
 
             if current_doc_entities is None:
@@ -1140,7 +1184,7 @@ class ProcessorMixin:
                 entity_names = list(
                     entity_data["entity_name"]
                     for entity_data in entities_to_store.values()
-                )
+                ) # 获取entities_to_store中的所有entity_name
                 doc_entities_data = {
                     "entity_names": entity_names,
                     "count": len(entity_names),
@@ -1150,7 +1194,7 @@ class ProcessorMixin:
                 # Update existing document entry
                 existing_entity_names = set(
                     current_doc_entities.get("entity_names", [])
-                )
+                ) # 获取当前文档的所有entity_name
                 new_entity_names = [
                     entity_data["entity_name"]
                     for entity_data in entities_to_store.values()
@@ -1167,8 +1211,8 @@ class ProcessorMixin:
                 }
 
             # Store updated data
-            await self.lightrag.full_entities.upsert({doc_id: doc_entities_data})
-            await self.lightrag.full_entities.index_done_callback()
+            await self.lightrag.full_entities.upsert({doc_id: doc_entities_data}) # 将doc_entities_data存储到full_entities中
+            await self.lightrag.full_entities.index_done_callback() # 调用full_entities的index_done_callback函数，以便在索引完成后执行一些操作
 
             self.logger.debug(
                 f"Added {len(entities_to_store)} multimodal main entities to full_entities for doc {doc_id}"
@@ -1183,7 +1227,9 @@ class ProcessorMixin:
     async def _batch_extract_entities_lightrag_style_type_aware(
         self, lightrag_chunks: Dict[str, Any]
     ) -> List[Tuple]:
-        """Use LightRAG's extract_entities for batch entity relation extraction"""
+        """Use LightRAG's extract_entities for batch entity relation extraction
+            使用LightRAG的extract_entities进行批量实体关系提取
+        """
         from lightrag.kg.shared_storage import (
             get_namespace_data,
             get_pipeline_status_lock,
@@ -1191,8 +1237,8 @@ class ProcessorMixin:
         from lightrag.operate import extract_entities
 
         # Get pipeline status (consistent with LightRAG)
-        pipeline_status = await get_namespace_data("pipeline_status")
-        pipeline_status_lock = get_pipeline_status_lock()
+        pipeline_status = await get_namespace_data("pipeline_status") # 获取pipeline_status
+        pipeline_status_lock = get_pipeline_status_lock() # 获取pipeline_status_lock，作用是防止多个进程同时更新pipeline_status
 
         # Directly use LightRAG's extract_entities
         chunk_results = await extract_entities(
@@ -1214,8 +1260,8 @@ class ProcessorMixin:
     ) -> List[Tuple]:
         """Add belongs_to relations for multimodal entities"""
         # Create mapping from chunk_id to modal_entity_name
-        chunk_to_modal_entity = {}
-        chunk_to_file_path = {}
+        chunk_to_modal_entity = {} # 存储chunk_id到modal_entity_name的映射
+        chunk_to_file_path = {} # 存储chunk_id到file_path的映射
 
         for data in multimodal_data_list:
             description = data["description"]
@@ -1223,30 +1269,33 @@ class ProcessorMixin:
             original_item = data["original_item"]
 
             # Use the same template formatting as in _convert_to_lightrag_chunks_type_aware
+            # 使用_convert_to_lightrag_chunks_type_aware中使用的相同模板格式化
             formatted_chunk_content = self._apply_chunk_template(
                 content_type, original_item, description
             )
             chunk_id = compute_mdhash_id(formatted_chunk_content, prefix="chunk-")
 
-            chunk_to_modal_entity[chunk_id] = data["entity_info"]["entity_name"]
-            chunk_to_file_path[chunk_id] = data.get("file_path", "multimodal_content")
+            chunk_to_modal_entity[chunk_id] = data["entity_info"]["entity_name"] # 将chunk_id和entity_name存储到chunk_to_modal_entity中
+            chunk_to_file_path[chunk_id] = data.get("file_path", "multimodal_content") # 将chunk_id和file_path存储到chunk_to_file_path中
 
-        enhanced_chunk_results = []
+        enhanced_chunk_results = [] # 存储增强后的chunk_results
         belongs_to_count = 0
 
         for maybe_nodes, maybe_edges in chunk_results:
             # Find corresponding modal_entity_name for this chunk
             chunk_id = None
-            for nodes_dict in maybe_nodes.values():
+            for nodes_dict in maybe_nodes.values(): # 遍历maybe_nodes中的所有节点
                 if nodes_dict:
-                    chunk_id = nodes_dict[0].get("source_id")
+                    chunk_id = nodes_dict[0].get("source_id") # 获取chunk_id，nodes_dict[0]是第一个节点，source_id是chunk_id
                     break
 
-            if chunk_id and chunk_id in chunk_to_modal_entity:
+            if chunk_id and chunk_id in chunk_to_modal_entity: # 如果chunk_id在chunk_to_modal_entity中，则找到对应的modal_entity_name
                 modal_entity_name = chunk_to_modal_entity[chunk_id]
                 file_path = chunk_to_file_path.get(chunk_id, "multimodal_content")
 
                 # Add belongs_to relations for all extracted entities
+                # 为所有提取的实体添加belongs_to关系
+                # 注意：这里的belongs_to关系是单向的，即modal_entity_name属于entity_name
                 for entity_name in maybe_nodes.keys():
                     if entity_name != modal_entity_name:  # Avoid self-relation
                         belongs_to_relation = {
@@ -1260,8 +1309,8 @@ class ProcessorMixin:
                         }
 
                         # Add to maybe_edges
-                        edge_key = (entity_name, modal_entity_name)
-                        if edge_key not in maybe_edges:
+                        edge_key = (entity_name, modal_entity_name) # 创建边key，这里是单向的，即modal_entity_name属于entity_name
+                        if edge_key not in maybe_edges: # 如果边key不在maybe_edges中，则创建一个新的列表
                             maybe_edges[edge_key] = []
                         maybe_edges[edge_key].append(belongs_to_relation)
                         belongs_to_count += 1
@@ -1276,7 +1325,9 @@ class ProcessorMixin:
     async def _batch_merge_lightrag_style_type_aware(
         self, enhanced_chunk_results: List[Tuple], file_path: str, doc_id: str = None
     ):
-        """Use LightRAG's merge_nodes_and_edges for batch merge"""
+        """Use LightRAG's merge_nodes_and_edges for batch merge
+           使用LightRAG的merge_nodes_and_edges进行批量合并
+        """
         from lightrag.kg.shared_storage import (
             get_namespace_data,
             get_pipeline_status_lock,
@@ -1308,7 +1359,9 @@ class ProcessorMixin:
     async def _update_doc_status_with_chunks_type_aware(
         self, doc_id: str, chunk_ids: List[str]
     ):
-        """Update document status with multimodal chunks"""
+        """Update document status with multimodal chunks
+            使用chunk_ids更新doc_id的doc_status
+        """
         try:
             # Get current document status
             current_doc_status = await self.lightrag.doc_status.get_by_id(doc_id)
@@ -1355,12 +1408,12 @@ class ProcessorMixin:
                     {
                         doc_id: {
                             **current_doc_status,
-                            "multimodal_processed": True,
+                            "multimodal_processed": True, # 将multimodal_processed设置为True
                             "updated_at": time.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
                         }
                     }
                 )
-                await self.lightrag.doc_status.index_done_callback()
+                await self.lightrag.doc_status.index_done_callback() # 确保doc_status更新被持久化到磁盘
                 self.logger.debug(
                     f"Marked multimodal content processing as complete for document {doc_id}"
                 )
@@ -1372,6 +1425,7 @@ class ProcessorMixin:
     async def is_document_fully_processed(self, doc_id: str) -> bool:
         """
         Check if a document is fully processed (both text and multimodal content).
+        检查文档是否完全处理（文本和多模态内容）  
 
         Args:
             doc_id: Document ID to check
@@ -1384,8 +1438,8 @@ class ProcessorMixin:
             if not doc_status:
                 return False
 
-            text_processed = doc_status.get("status") == DocStatus.PROCESSED
-            multimodal_processed = doc_status.get("multimodal_processed", False)
+            text_processed = doc_status.get("status") == DocStatus.PROCESSED # 检查文本是否处理完成
+            multimodal_processed = doc_status.get("multimodal_processed", False) # 检查多模态内容是否处理完成
 
             return text_processed and multimodal_processed
 
@@ -1398,6 +1452,7 @@ class ProcessorMixin:
     async def get_document_processing_status(self, doc_id: str) -> Dict[str, Any]:
         """
         Get detailed processing status for a document.
+        获取文档的详细处理状态
 
         Args:
             doc_id: Document ID to check
@@ -1521,6 +1576,7 @@ class ProcessorMixin:
         else:
             # If no multimodal content, mark multimodal processing as complete
             # This ensures the document status properly reflects completion of all processing
+            # 如果没有
             await self._mark_multimodal_processing_complete(doc_id)
             self.logger.debug(
                 f"No multimodal content found in document {doc_id}, marked multimodal processing as complete"
