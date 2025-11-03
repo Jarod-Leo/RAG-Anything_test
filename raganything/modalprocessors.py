@@ -56,7 +56,7 @@ class ContextExtractor:
 
         Args:
             config: Context extraction configuration
-            tokenizer: Tokenizer for accurate token counting
+            tokenizer: Tokenizer for accurate token counting，Tokenizer用来准确计算token数量
         """
         self.config = config or ContextConfig() # 使用默认配置, 如果没有传入配置，则使用默认配置
         self.tokenizer = tokenizer  # 使用默认tokenizer
@@ -98,15 +98,20 @@ class ContextExtractor:
             else: # 其他情况，则调用_extract_from_content_list函数
                 logger.info(f"content_format: {content_format}, content_source: {content_source}")
                 # Auto-detect content source format
-                if isinstance(content_source, list):
+
+                # 自动检测内容源格式
+                if isinstance(content_source, list): # 如果内容源是列表，则调用_extract_from_content_list函数
+                    logger.info(f"content_source: {content_source}")
                     return self._extract_from_content_list(
                         content_source, current_item_info
                     )
-                elif isinstance(content_source, dict):
+                elif isinstance(content_source, dict): # 如果内容源是字典，则调用_extract_from_dict_source函数
+                    logger.info(f"content_source: {content_source}")
                     return self._extract_from_dict_source(
                         content_source, current_item_info
                     )
-                elif isinstance(content_source, str):
+                elif isinstance(content_source, str): # 如果内容源是字符串，则调用_extract_from_text_source函数
+                    logger.info(f"content_source: {content_source}")
                     return self._extract_from_text_source(
                         content_source, current_item_info
                     )
@@ -137,7 +142,7 @@ class ContextExtractor:
             return self._extract_page_context(content_list, current_item_info)
         elif self.config.context_mode == "chunk": # 如果上下文模式是chunk，则调用_extract_chunk_context函数
             return self._extract_chunk_context(content_list, current_item_info)
-        else: 
+        else:  # 其他情况，则调用_extract_token_context函数
             return self._extract_page_context(content_list, current_item_info)
 
     def _extract_page_context(
@@ -181,13 +186,13 @@ class ContextExtractor:
                         context_texts.append(text_content)
 
         context = "\n".join(context_texts) # 将上下文文本列表拼接成上下文文本字符串
-        return self._truncate_context(context)
+        return self._truncate_context(context) # 截断上下文文本字符串，返回截断后的上下文文本字符串
 
     def _extract_chunk_context(
         self, content_list: List[Dict], current_item_info: Dict
     ) -> str:
         """Extract context based on content chunks
-
+           基于内容chunk提取上下文
         Args:
             content_list: List of content items
             current_item_info: Current item with index info
@@ -204,13 +209,14 @@ class ContextExtractor:
         context_texts = []
 
         for i in range(start_idx, end_idx):
-            if i != current_index:
+            if i != current_index: # 如果当前索引不是当前项的索引，则提取文本内容
                 item = content_list[i]
                 item_type = item.get("type", "")
 
-                if item_type in self.config.filter_content_types:
+                if item_type in self.config.filter_content_types: # 如果当前项的类型匹配过滤条件，则提取文本内容
+                    # Extract text content from item
                     text_content = self._extract_text_from_item(item)
-                    if text_content and text_content.strip():
+                    if text_content and text_content.strip(): # 如果文本内容不为空，则添加到上下文文本列表中
                         context_texts.append(text_content)
 
         context = "\n".join(context_texts)
@@ -218,7 +224,7 @@ class ContextExtractor:
 
     def _extract_text_from_item(self, item: Dict) -> str:
         """Extract text content from a content item
-
+            从内容项中提取文本内容
         Args:
             item: Content item dictionary
 
@@ -228,7 +234,8 @@ class ContextExtractor:
         item_type = item.get("type", "")
 
         if item_type == "text":
-            text = item.get("text", "")
+            text = item.get("text", "") # 获取文本内容
+            # 获取文本级别，默认为0，即不包含结构化内容
             text_level = item.get("text_level", 0)
 
             # Add header indication for structured content·
@@ -338,7 +345,7 @@ class ContextExtractor:
 
             # Truncate to max tokens and decode back to text
             truncated_tokens = tokens[: self.config.max_context_tokens]
-            truncated_text = self.tokenizer.decode(truncated_tokens)
+            truncated_text = self.tokenizer.decode(truncated_tokens) # 将tokenizer编码后的token截断到max_context_tokens长度，并解码回文本
 
             # Try to end at a sentence boundary
             last_period = truncated_text.rfind(".")
@@ -383,42 +390,42 @@ class BaseModalProcessor:
 
         Args:
             lightrag: LightRAG instance
-            modal_caption_func: Function for generating descriptions
-            context_extractor: Context extractor instance
+            modal_caption_func: Function for generating descriptions，生成描述的函数
+            context_extractor: Context extractor instance，上下文提取器实例
         """
         self.lightrag = lightrag
         self.modal_caption_func = modal_caption_func
 
         # Use LightRAG's storage instances
-        self.text_chunks_db = lightrag.text_chunks
-        self.chunks_vdb = lightrag.chunks_vdb
-        self.entities_vdb = lightrag.entities_vdb
-        self.relationships_vdb = lightrag.relationships_vdb
-        self.knowledge_graph_inst = lightrag.chunk_entity_relation_graph
+        self.text_chunks_db = lightrag.text_chunks # 文本块数据库
+        self.chunks_vdb = lightrag.chunks_vdb # 文本块向量数据库
+        self.entities_vdb = lightrag.entities_vdb # 实体向量数据库
+        self.relationships_vdb = lightrag.relationships_vdb # 关系向量数据库
+        self.knowledge_graph_inst = lightrag.chunk_entity_relation_graph # 知识图谱实例
 
-        # Use LightRAG's configuration and functions
-        self.embedding_func = lightrag.embedding_func
-        self.llm_model_func = lightrag.llm_model_func
-        self.global_config = asdict(lightrag)
-        self.hashing_kv = lightrag.llm_response_cache
+        # Use LightRAG's configuration and functions，使用LightRAG的配置和函数
+        self.embedding_func = lightrag.embedding_func  # 嵌入函数
+        self.llm_model_func = lightrag.llm_model_func # llm模型函数
+        self.global_config = asdict(lightrag) # 全局配置
+        self.hashing_kv = lightrag.llm_response_cache # llm回答缓存
         self.tokenizer = lightrag.tokenizer
 
         # Initialize context extractor with tokenizer if not provided
-        if context_extractor is None:
+        if context_extractor is None: # 如果没有提供上下文提取器实例，则初始化一个新的上下文提取器实例
             self.context_extractor = ContextExtractor(tokenizer=self.tokenizer)
         else:
             self.context_extractor = context_extractor
             # Update tokenizer if context_extractor doesn't have one
-            if self.context_extractor.tokenizer is None:
+            if self.context_extractor.tokenizer is None: # 如果上下文提取器实例没有tokenizer，则更新tokenizer
                 self.context_extractor.tokenizer = self.tokenizer
 
         # Content source for context extraction
-        self.content_source = None
+        self.content_source = None # 内容源，用于上下文提取
         self.content_format = "auto"
 
     def set_content_source(self, content_source: Any, content_format: str = "auto"):
         """Set content source for context extraction
-
+           设置内容源，用于上下文提取
         Args:
             content_source: Source content for context extraction
             content_format: Format of content source ("minerU", "text_chunks", "auto")
@@ -429,6 +436,7 @@ class BaseModalProcessor:
 
     def _get_context_for_item(self, item_info: Dict[str, Any]) -> str:
         """Get context for current processing item
+           获取当前处理项的上下文
 
         Args:
             item_info: Information about current item (page_idx, index, etc.)
@@ -442,7 +450,7 @@ class BaseModalProcessor:
         try:
             context = self.context_extractor.extract_context(
                 self.content_source, item_info, self.content_format
-            )
+            ) # 从内容源中提取上下文
             if context:
                 logger.debug(
                     f"Extracted context of length {len(context)} for item: {item_info}"
@@ -462,6 +470,7 @@ class BaseModalProcessor:
         """
         Generate text description and entity info only, without entity relation extraction.
         Used for batch processing stage 1.
+        生成文本描述和实体信息，不进行实体关系提取。用于批处理阶段1。
 
         Args:
             modal_content: Modal content to process
@@ -473,6 +482,7 @@ class BaseModalProcessor:
             Tuple of (description, entity_info)
         """
         # Subclasses must implement this method
+        # 子类必须实现这个方法
         raise NotImplementedError("Subclasses must implement this method")
 
     async def _create_entity_and_chunk(
@@ -486,10 +496,11 @@ class BaseModalProcessor:
     ) -> Tuple[str, Dict[str, Any]]:
         """Create entity and text chunk"""
         # Create chunk
-        chunk_id = compute_mdhash_id(str(modal_chunk), prefix="chunk-")
+        chunk_id = compute_mdhash_id(str(modal_chunk), prefix="chunk-") # 计算chunk的id
         tokens = len(self.tokenizer.encode(modal_chunk))
 
         # Use provided doc_id or generate one from chunk_id for backward compatibility
+        # 如果没有提供doc_id，则使用chunk_id作为doc_id，用于向后兼容性
         actual_doc_id = doc_id if doc_id else chunk_id
 
         chunk_data = {
@@ -501,6 +512,7 @@ class BaseModalProcessor:
         }
 
         # Store chunk
+        # 存储chunk
         await self.text_chunks_db.upsert({chunk_id: chunk_data})
 
         # Store chunk in vector database for retrieval
@@ -937,36 +949,38 @@ class ImageModalProcessor(BaseModalProcessor):
         doc_id: str = None,
         chunk_order_index: int = 0,
     ) -> Tuple[str, Dict[str, Any]]:
-        """Process image content with context support"""
+        """Process image content with context support
+           用上下文支持处理图像内容
+        """
         try:
-            # Generate description and entity info
+            # Generate description and entity info，生成描述和实体信息
             enhanced_caption, entity_info = await self.generate_description_only(
                 modal_content, content_type, item_info, entity_name
             )
 
-            # Build complete image content
-            if isinstance(modal_content, str):
+            # Build complete image content，构建完整的图像内容
+            if isinstance(modal_content, str): # 如果模态内容为字符串
                 try:
-                    content_data = json.loads(modal_content)
+                    content_data = json.loads(modal_content) # 加载模态内容为json格式
                 except json.JSONDecodeError:
                     content_data = {"description": modal_content}
             else:
                 content_data = modal_content
 
-            image_path = content_data.get("img_path", "")
+            image_path = content_data.get("img_path", "") # 获取图像路径
             captions = content_data.get(
                 "image_caption", content_data.get("img_caption", [])
-            )
+            ) # 获取图像标题
             footnotes = content_data.get(
                 "image_footnote", content_data.get("img_footnote", [])
-            )
+            ) # 获取图像脚注
 
             modal_chunk = PROMPTS["image_chunk"].format(
                 image_path=image_path,
                 captions=", ".join(captions) if captions else "None",
                 footnotes=", ".join(footnotes) if footnotes else "None",
                 enhanced_caption=enhanced_caption,
-            )
+            ) # 构建模态内容chunk
 
             return await self._create_entity_and_chunk(
                 modal_chunk,
@@ -975,7 +989,7 @@ class ImageModalProcessor(BaseModalProcessor):
                 batch_mode,
                 doc_id,
                 chunk_order_index,
-            )
+            ) # 创建实体和chunk
 
         except Exception as e:
             logger.error(f"Error processing image content: {e}")

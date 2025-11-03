@@ -2,11 +2,21 @@ import asyncio
 from raganything import RAGAnything, RAGAnythingConfig
 from lightrag.llm.openai import openai_complete_if_cache, openai_embed
 from lightrag.utils import EmbeddingFunc
+from lightrag import LightRAG
+import os
+
 
 async def main():
-    # 设置 API 配置
+    # 设置 API 配置s
     api_key = "sk-f653945d68514f5aa5e7f6ddc7bc04fb"
     base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"  # 可选
+
+    # neo4j
+    BATCH_SIZE_NODES = 500
+    BATCH_SIZE_EDGES = 100
+    os.environ["NEO4J_URI"] = "neo4j://localhost:7687"
+    os.environ["NEO4J_USERNAME"] = "neo4j"
+    os.environ["NEO4J_PASSWORD"] = "20250923"
 
     # 创建 RAGAnything 配置
     config = RAGAnythingConfig(
@@ -16,7 +26,7 @@ async def main():
         enable_image_processing=True,
         enable_table_processing=True,
         enable_equation_processing=True,
-    )
+    ) # 默认使用page mode的上下文提取
 
     # 定义 LLM 模型函数
     def llm_model_func(prompt, system_prompt=None, history_messages=[], **kwargs):
@@ -102,13 +112,13 @@ async def main():
         vision_model_func=vision_model_func,
         embedding_func=embedding_func,
         lightrag_kwargs={
+            "graph_storage": "Neo4JStorage",
             "vector_db_storage_cls_kwargs": {
                 "dim": 1024,  # 向量维度
                 "storage_path": "./vector_storage",  # 存储路径
             }
         }
     )
-
     # 处理文档
     await rag.process_document_complete(
         file_path="./document/mercedes-e_user_manual.pdf",
@@ -119,11 +129,11 @@ async def main():
     # 查询处理后的内容
     # 纯文本查询 - 基本知识库搜索
     text_result = await rag.aquery(
-        "文档的主要内容是什么？",
+        "如何开启大灯？",
         mode="hybrid"
     )
     print("文本查询结果:", text_result)
-    text_result2 = await rag.aquery(query="触摸感应式控制元件的主要功能是什么？", mode="hybrid")
+    text_result2 = await rag.aquery(query="带导航功能的平视显示系统内容？", mode="hybrid")
     print("文本查询结果2:", text_result2)
     # # 多模态查询 - 包含具体多模态内容的查询
     # multimodal_result = await rag.aquery_with_multimodal(
