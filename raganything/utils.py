@@ -26,16 +26,17 @@ def separate_content(
     multimodal_items = []
 
     for item in content_list:
-        content_type = item.get("type", "text")
+        content_type = item.get("type", "text") # 获取内容类型，默认为文本类型
 
         if content_type == "text":
             # Text content
-            text = item.get("text", "")
+            text = item.get("text", "") # 获取文本内容
+            # 如果文本内容不为空，则添加到text_parts列表中
             if text.strip():
                 text_parts.append(text)
         else:
             # Multimodal content (image, table, equation, etc.)
-            multimodal_items.append(item)
+            multimodal_items.append(item) # 将多模态内容添加到multimodal_items列表中
 
     # Merge all text content
     text_content = "\n\n".join(text_parts)
