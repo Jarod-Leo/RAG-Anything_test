@@ -68,7 +68,7 @@ class ContextExtractor:
         content_format: str = "auto",
     ) -> str:
         """Extract context for current item from content source
-            从内容源中提取当前项的上下文
+           从内容源中提取当前项的上下文
 
         Args:
             content_source: Source content (list, dict, or other format)
@@ -326,7 +326,7 @@ class ContextExtractor:
         return self._truncate_context(context)
 
     def _truncate_context(self, context: str) -> str:
-        """Truncate context to maximum token limit
+        """Truncate context to maximum token limit，尝试在句子边界处截断上下文
 
         Args:
             context: Context text to truncate
@@ -337,23 +337,23 @@ class ContextExtractor:
         if not context:
             return ""
 
-        # Use tokenizer if available for accurate token counting
+        # Use tokenizer if available for accurate token counting，使用tokenizer进行准确的token计数
         if self.tokenizer:
             tokens = self.tokenizer.encode(context)
             if len(tokens) <= self.config.max_context_tokens:
                 return context
 
-            # Truncate to max tokens and decode back to text
+            # Truncate to max tokens and decode back to text，在最大token数处截断，并解码回文本
             truncated_tokens = tokens[: self.config.max_context_tokens]
             truncated_text = self.tokenizer.decode(truncated_tokens) # 将tokenizer编码后的token截断到max_context_tokens长度，并解码回文本
 
-            # Try to end at a sentence boundary
+            # Try to end at a sentence boundary，尝试在句子边界处截断
             last_period = truncated_text.rfind(".")
             last_newline = truncated_text.rfind("\n")
 
-            if last_period > len(truncated_text) * 0.8:
+            if last_period > len(truncated_text) * 0.8: # 如果最后一个句号的位置在文本长度的80%以上，则在句号处截断
                 return truncated_text[: last_period + 1]
-            elif last_newline > len(truncated_text) * 0.8:
+            elif last_newline > len(truncated_text) * 0.8: # 如果最后一个换行符的位置在文本长度的80%以上，则在换行符处截断
                 return truncated_text[:last_newline]
             else:
                 return truncated_text + "..."
@@ -513,7 +513,7 @@ class BaseModalProcessor:
 
         # Store chunk
         # 存储chunk
-        await self.text_chunks_db.upsert({chunk_id: chunk_data})
+        await self.text_chunks_db.upsert({chunk_id: chunk_data}) # 插入chunk数据到文本块数据库
 
         # Store chunk in vector database for retrieval
         chunk_vdb_data = {
@@ -525,7 +525,7 @@ class BaseModalProcessor:
                 "file_path": file_path,
             }
         }
-        await self.chunks_vdb.upsert(chunk_vdb_data)
+        await self.chunks_vdb.upsert(chunk_vdb_data) # 插入chunk数据到文本块向量数据库
 
         # Create entity node
         node_data = {
@@ -539,7 +539,7 @@ class BaseModalProcessor:
 
         await self.knowledge_graph_inst.upsert_node(
             entity_info["entity_name"], node_data
-        )
+        ) # 插入实体节点到知识图谱
 
         # Insert entity into vector database
         entity_vdb_data = {
@@ -551,12 +551,12 @@ class BaseModalProcessor:
                 "file_path": file_path,
             }
         }
-        await self.entities_vdb.upsert(entity_vdb_data)
+        await self.entities_vdb.upsert(entity_vdb_data) # 插入实体数据到实体向量数据库
 
         # Process entity and relationship extraction
         chunk_results = await self._process_chunk_for_extraction(
             chunk_id, entity_info["entity_name"], batch_mode
-        )
+        ) # 处理chunk以提取实体和关系
 
         return (
             entity_info["summary"],
@@ -567,45 +567,45 @@ class BaseModalProcessor:
                 "chunk_id": chunk_id,
             },
             chunk_results,
-        )
+        ) # 返回实体描述和实体信息以及chunk处理结果
 
     def _robust_json_parse(self, response: str) -> dict:
-        """Robust JSON parsing with multiple fallback strategies"""
+        """Robust JSON parsing with multiple fallback strategies，用多种回退策略进行稳健的JSON解析"""
 
-        # Strategy 1: Try direct parsing first
+        # Strategy 1: Try direct parsing first，首先尝试直接解析
         for json_candidate in self._extract_all_json_candidates(response):
             result = self._try_parse_json(json_candidate)
             if result:
                 return result
 
-        # Strategy 2: Try with basic cleanup
+        # Strategy 2: Try with basic cleanup，尝试进行基本清理
         for json_candidate in self._extract_all_json_candidates(response):
             cleaned = self._basic_json_cleanup(json_candidate)
             result = self._try_parse_json(cleaned)
             if result:
                 return result
 
-        # Strategy 3: Try progressive quote fixing
+        # Strategy 3: Try progressive quote fixing，尝试逐步修复引号问题
         for json_candidate in self._extract_all_json_candidates(response):
             fixed = self._progressive_quote_fix(json_candidate)
             result = self._try_parse_json(fixed)
             if result:
                 return result
 
-        # Strategy 4: Fallback to regex field extraction
+        # Strategy 4: Fallback to regex field extraction，回退到使用正则表达式提取字段
         return self._extract_fields_with_regex(response)
 
     def _extract_all_json_candidates(self, response: str) -> list:
-        """Extract all possible JSON candidates from response"""
+        """Extract all possible JSON candidates from response，提取响应中所有可能的JSON候选项"""
         candidates = []
 
-        # Method 1: JSON in code blocks
+        # Method 1: JSON in code blocks，提取代码块中的JSON
         import re
 
         json_blocks = re.findall(r"```(?:json)?\s*(\{.*?\})\s*```", response, re.DOTALL)
         candidates.extend(json_blocks)
 
-        # Method 2: Balanced braces
+        # Method 2: Balanced braces，提取平衡的大括号内容
         brace_count = 0
         start_pos = -1
 
@@ -619,7 +619,7 @@ class BaseModalProcessor:
                 if brace_count == 0 and start_pos != -1:
                     candidates.append(response[start_pos : i + 1])
 
-        # Method 3: Simple regex fallback
+        # Method 3: Simple regex fallback，简单的正则表达式回退
         simple_match = re.search(r"\{.*\}", response, re.DOTALL)
         if simple_match:
             candidates.append(simple_match.group(0))
@@ -628,6 +628,7 @@ class BaseModalProcessor:
 
     def _try_parse_json(self, json_str: str) -> dict:
         """Try to parse JSON string, return None if failed"""
+        # 如果json_str为空或仅包含空白字符，则返回None
         if not json_str or not json_str.strip():
             return None
 
@@ -638,10 +639,10 @@ class BaseModalProcessor:
 
     def _basic_json_cleanup(self, json_str: str) -> str:
         """Basic cleanup for common JSON issues"""
-        # Remove extra whitespace
+        # Remove extra whitespace，移除多余的空白字符
         json_str = json_str.strip()
 
-        # Fix common quote issues
+        # Fix common quote issues，修复常见的引号问题
         json_str = json_str.replace('"', '"').replace('"', '"')  # Smart quotes
         json_str = json_str.replace(""", "'").replace(""", "'")  # Smart apostrophes
 
@@ -710,13 +711,13 @@ class BaseModalProcessor:
     async def _process_chunk_for_extraction(
         self, chunk_id: str, modal_entity_name: str, batch_mode: bool = False
     ):
-        """Process chunk for entity and relationship extraction"""
-        chunk_data = await self.text_chunks_db.get_by_id(chunk_id)
+        """Process chunk for entity and relationship extraction，处理块以进行实体和关系提取"""
+        chunk_data = await self.text_chunks_db.get_by_id(chunk_id) # 从文本块数据库中获取chunk数据
         if not chunk_data:
             logger.error(f"Chunk {chunk_id} not found")
             return
 
-        # Create text chunk for vector database
+        # Create text chunk for vector database，创建文本块用于向量数据库
         chunk_vdb_data = {
             chunk_id: {
                 "content": chunk_data["content"],
@@ -732,7 +733,7 @@ class BaseModalProcessor:
         pipeline_status = await get_namespace_data("pipeline_status")
         pipeline_status_lock = get_pipeline_status_lock()
 
-        # Prepare chunk for extraction
+        # Prepare chunk for extraction，准备块以进行提取
         chunks = {chunk_id: chunk_data}
 
         # Extract entities and relationships
@@ -744,12 +745,12 @@ class BaseModalProcessor:
             llm_response_cache=self.hashing_kv,
         )
 
-        # Add "belongs_to" relationships for all extracted entities
+        # Add "belongs_to" relationships for all extracted entities，为所有提取的实体添加“belongs_to”关系
         processed_chunk_results = []
         for maybe_nodes, maybe_edges in chunk_results:
             for entity_name in maybe_nodes.keys():
                 if entity_name != modal_entity_name:  # Skip self-relationship
-                    # Create belongs_to relationship
+                    # Create belongs_to relationship，创建belongs_to关系
                     relation_data = {
                         "description": f"Entity {entity_name} belongs to {modal_entity_name}",
                         "keywords": "belongs_to,part_of,contained_in",
@@ -759,8 +760,9 @@ class BaseModalProcessor:
                     }
                     await self.knowledge_graph_inst.upsert_edge(
                         entity_name, modal_entity_name, relation_data
-                    )
+                    )# 插入实体关系到知识图谱
 
+                    # Insert relationship into vector database，插入关系到向量数据库
                     relation_id = compute_mdhash_id(
                         entity_name + modal_entity_name, prefix="rel-"
                     )
@@ -776,7 +778,7 @@ class BaseModalProcessor:
                     }
                     await self.relationships_vdb.upsert(relation_vdb_data)
 
-                    # Add to maybe_edges
+                    # Add to maybe_edges，添加到maybe_edges
                     maybe_edges[(entity_name, modal_entity_name)] = [relation_data]
 
             processed_chunk_results.append((maybe_nodes, maybe_edges))
@@ -823,10 +825,10 @@ class ImageModalProcessor(BaseModalProcessor):
         super().__init__(lightrag, modal_caption_func, context_extractor)
 
     def _encode_image_to_base64(self, image_path: str) -> str:
-        """Encode image to base64"""
+        """Encode image to base64，将图像编码为base64格式"""
         try:
             with open(image_path, "rb") as image_file:
-                encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+                encoded_string = base64.b64encode(image_file.read()).decode("utf-8") # 读取图像文件并编码为base64字符串
             return encoded_string
         except Exception as e:
             logger.error(f"Failed to encode image {image_path}: {e}")
@@ -842,6 +844,7 @@ class ImageModalProcessor(BaseModalProcessor):
         """
         Generate image description and entity info only, without entity relation extraction.
         Used for batch processing stage 1.
+        生成图像描述和实体信息，不进行实体关系提取。用于批处理阶段1。
 
         Args:
             modal_content: Image content to process
@@ -876,17 +879,17 @@ class ImageModalProcessor(BaseModalProcessor):
                     f"No image path provided in modal_content: {modal_content}"
                 )
 
-            # Convert to Path object and check if it exists
+            # Convert to Path object and check if it exists，转换为Path对象并检查是否存在
             image_path_obj = Path(image_path)
             if not image_path_obj.exists():
                 raise FileNotFoundError(f"Image file not found: {image_path}")
 
-            # Extract context for current item
+            # Extract context for current item，提取的context为prompt提供上下文
             context = ""
             if item_info:
                 context = self._get_context_for_item(item_info)
 
-            # Build detailed visual analysis prompt with context
+            # Build detailed visual analysis prompt with context，构建带有上下文的详细视觉分析提示
             if context:
                 vision_prompt = PROMPTS.get(
                     "vision_prompt_with_context", PROMPTS["vision_prompt"]
@@ -899,6 +902,7 @@ class ImageModalProcessor(BaseModalProcessor):
                     captions=captions if captions else "None",
                     footnotes=footnotes if footnotes else "None",
                 )
+                logger.debug(f"Vision prompt with context: {vision_prompt}")
             else:
                 vision_prompt = PROMPTS["vision_prompt"].format(
                     entity_name=entity_name
@@ -908,6 +912,7 @@ class ImageModalProcessor(BaseModalProcessor):
                     captions=captions if captions else "None",
                     footnotes=footnotes if footnotes else "None",
                 )
+                logger.debug(f"Vision prompt: {vision_prompt}")
 
             # Encode image to base64
             image_base64 = self._encode_image_to_base64(image_path)
@@ -921,7 +926,7 @@ class ImageModalProcessor(BaseModalProcessor):
                 system_prompt=PROMPTS["IMAGE_ANALYSIS_SYSTEM"],
             )
 
-            # Parse response (reuse existing logic)
+            # Parse response (reuse existing logic),解析响应（重用现有逻辑）
             enhanced_caption, entity_info = self._parse_response(response, entity_name)
 
             return enhanced_caption, entity_info
@@ -1008,17 +1013,17 @@ class ImageModalProcessor(BaseModalProcessor):
     ) -> Tuple[str, Dict[str, Any]]:
         """Parse model response"""
         try:
-            response_data = self._robust_json_parse(response)
+            response_data = self._robust_json_parse(response) # 将llm生成的回答解析为json格式
 
-            description = response_data.get("detailed_description", "")
-            entity_data = response_data.get("entity_info", {})
+            description = response_data.get("detailed_description", "") # 获取详细描述
+            entity_data = response_data.get("entity_info", {}) # 获取实体信息
 
             if not description or not entity_data:
                 raise ValueError("Missing required fields in response")
 
             if not all(
                 key in entity_data for key in ["entity_name", "entity_type", "summary"]
-            ):
+            ): # 检查实体信息中是否包含所需的字段
                 raise ValueError("Missing required fields in entity_info")
 
             entity_data["entity_name"] = (
