@@ -242,18 +242,18 @@ class RAGAnything(QueryMixin, ProcessorMixin, BatchMixin):
         """
         try:
             # Check parser installation first
-            if not self._parser_installation_checked: # 如果解析器安装未检查过，则检查解析器安装
-                # Check if parser is installed
-                if not self.doc_parser.check_installation(): # 如果解析器未安装，则打印错误信息，并返回错误信息
-                    error_msg = (
-                        f"Parser '{self.config.parser}' is not properly installed. "
-                        "Please install it using 'pip install' or 'uv pip install'."
-                    )
-                    self.logger.error(error_msg)
-                    return {"success": False, "error": error_msg} # 返回错误信息
+            # if not self._parser_installation_checked: # 如果解析器安装未检查过，则检查解析器安装
+            #     # Check if parser is installed
+            #     if not self.doc_parser.check_installation(): # 如果解析器未安装，则打印错误信息，并返回错误信息
+            #         error_msg = (
+            #             f"Parser '{self.config.parser}' is not properly installed. "
+            #             "Please install it using 'pip install' or 'uv pip install'."
+            #         )
+            #         self.logger.error(error_msg)
+            #         return {"success": False, "error": error_msg} # 返回错误信息
 
-                self._parser_installation_checked = True # 将解析器安装标记设置为True
-                self.logger.info(f"Parser '{self.config.parser}' installation verified")
+            #     self._parser_installation_checked = True # 将解析器安装标记设置为True
+            #     self.logger.info(f"Parser '{self.config.parser}' installation verified")
 
             if self.lightrag is not None: # 如果lightrag不为None，则检查lightrag是否初始化
                 # LightRAG was pre-provided, but we need to ensure it's properly initialized
