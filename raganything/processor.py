@@ -1624,6 +1624,7 @@ class ProcessorMixin:
             # Ensure LightRAG is initialized
             result = await self._ensure_lightrag_initialized()
             if not result["success"]:
+                raise RuntimeError(f"LightRAG init failed: {result.get('error')}")
                 await self.lightrag.doc_status.upsert(
                     {
                         doc_pre_id: {
